@@ -89,17 +89,8 @@ export const getQueenValidMoves = (
   isWhiteToPlay: boolean,
   board: string[][]
 ): boolean[][] => {
-  for (let y = 0; y < 8; y++) {
-    for (let x = 0; x < 8; x++) {
-      if (pos.x === x && pos.y === y) continue;
-      if (
-        getAllyCollision(isWhiteToPlay ? "q" : "Q", getPiece({ y, x }, board))
-      ) {
-        continue;
-      }
-      availableBoard[y][x] = true;
-    }
-  }
+  getRookValidMoves(pos, availableBoard, isWhite, isWhiteToPlay, board);
+  getBishopValidMoves(pos, availableBoard, isWhite, isWhiteToPlay, board);
   return availableBoard;
 };
 
