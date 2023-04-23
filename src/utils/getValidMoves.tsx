@@ -4,6 +4,31 @@ const getOutOfBondsMoves = (pos: MousePos) => {
   if (pos.x < 0 || pos.x > 7 || pos.y < 0 || pos.y > 7) return true;
   return false;
 };
+const getValidMovesForWhitePawn = (
+  pos: MousePos,
+  availableBoard: boolean[][]
+) => {
+  if (pos.y === 6) {
+    availableBoard[pos.y - 1][pos.x] = true;
+    availableBoard[pos.y - 2][pos.x] = true;
+  } else {
+    if (getOutOfBondsMoves({ y: pos.y - 1, x: pos.x })) return;
+    availableBoard[pos.y - 1][pos.x] = true;
+  }
+};
+
+const getValidMovesForBlackPawn = (
+  pos: MousePos,
+  availableBoard: boolean[][]
+) => {
+  if (pos.y === 1) {
+    availableBoard[pos.y + 1][pos.x] = true;
+    availableBoard[pos.y + 2][pos.x] = true;
+  } else {
+    if (getOutOfBondsMoves({ y: pos.y + 1, x: pos.x })) return;
+    availableBoard[pos.y + 1][pos.x] = true;
+  }
+};
 
 export const getPawnValidMoves = (
   pos: MousePos,
@@ -13,35 +38,15 @@ export const getPawnValidMoves = (
 ) => {
   if (isWhiteToPlay) {
     if (isWhite) {
-      if (pos.y === 6) {
-        availableBoard[pos.y - 1][pos.x] = true;
-        availableBoard[pos.y - 2][pos.x] = true;
-      } else {
-        availableBoard[pos.y - 1][pos.x] = true;
-      }
+      getValidMovesForWhitePawn(pos, availableBoard);
     } else {
-      if (pos.y === 1) {
-        availableBoard[pos.y + 1][pos.x] = true;
-        availableBoard[pos.y + 2][pos.x] = true;
-      } else {
-        availableBoard[pos.y + 1][pos.x] = true;
-      }
+      getValidMovesForBlackPawn(pos, availableBoard);
     }
   } else {
     if (isWhite) {
-      if (pos.y === 1) {
-        availableBoard[pos.y + 1][pos.x] = true;
-        availableBoard[pos.y + 2][pos.x] = true;
-      } else {
-        availableBoard[pos.y + 1][pos.x] = true;
-      }
+      getValidMovesForBlackPawn(pos, availableBoard);
     } else {
-      if (pos.y === 6) {
-        availableBoard[pos.y - 1][pos.x] = true;
-        availableBoard[pos.y - 2][pos.x] = true;
-      } else {
-        availableBoard[pos.y - 1][pos.x] = true;
-      }
+      getValidMovesForWhitePawn(pos, availableBoard);
     }
   }
   return availableBoard;
@@ -93,40 +98,28 @@ export const getBishopValidMoves = (
   pos: MousePos,
   availableBoard: boolean[][]
 ) => {
-  for (let i = 0; i < 8; i++) {
-    if (
-      (pos.y + i === pos.y && pos.x === pos.x + i) ||
-      getOutOfBondsMoves({ y: pos.y + i, x: pos.x + i })
-    )
-      continue;
-    availableBoard[pos.y + i][pos.x + i] = true;
+  const x = pos.x;
+  const y = pos.y;
+
+  const directions = [
+    { x: 1, y: 1 },
+    { x: 1, y: -1 },
+    { x: -1, y: 1 },
+    { x: -1, y: -1 },
+  ];
+
+  for (const dir of directions) {
+    let i = 1;
+    while (!getOutOfBondsMoves({ y: y + i * dir.y, x: x + i * dir.x })) {
+      if (availableBoard[y + i * dir.y][x + i * dir.x]) break;
+      availableBoard[y + i * dir.y][x + i * dir.x] = true;
+      i++;
+    }
   }
-  for (let i = 8; i >= 0; i--) {
-    if (
-      (pos.y - i === pos.y && pos.x === pos.x + i) ||
-      getOutOfBondsMoves({ y: pos.y - i, x: pos.x + i })
-    )
-      continue;
-    availableBoard[pos.y - i][pos.x + i] = true;
-  }
-  for (let i = 8; i >= 0; i--) {
-    if (
-      (pos.y + i === pos.y && pos.x === pos.x - i) ||
-      getOutOfBondsMoves({ y: pos.y + i, x: pos.x - i })
-    )
-      continue;
-    availableBoard[pos.y + i][pos.x - i] = true;
-  }
-  for (let i = 8; i >= 0; i--) {
-    if (
-      (pos.y - i === pos.y && pos.x === pos.x - i) ||
-      getOutOfBondsMoves({ y: pos.y - i, x: pos.x - i })
-    )
-      continue;
-    availableBoard[pos.y - i][pos.x - i] = true;
-  }
+
   return availableBoard;
 };
+
 export const getKnightValidMoves = (
   pos: MousePos,
   availableBoard: boolean[][]
