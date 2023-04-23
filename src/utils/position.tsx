@@ -8,7 +8,8 @@ export const checkValidMoves = (
   availableBoard: boolean[][],
   setBoard: React.Dispatch<React.SetStateAction<boolean[][]>>,
   isWhiteToPlay: boolean,
-  isWhite: boolean
+  isWhite: boolean,
+  board: string[][]
 ) => {
   if (isWhiteToPlay && piece === piece.toLocaleUpperCase()) return;
   if (!isWhiteToPlay && piece !== piece.toLocaleUpperCase()) return;
@@ -22,9 +23,12 @@ export const checkValidMoves = (
   ]);
   const getValidMovesFn = getMoves.get(piece.toUpperCase());
   if (getValidMovesFn) {
-    setBoard(getValidMovesFn(pos, availableBoard, isWhite, isWhiteToPlay));
+    setBoard(
+      getValidMovesFn(pos, availableBoard, isWhite, isWhiteToPlay, board)
+    );
   }
 };
+
 export const getPiece = (pos: MousePos, board: string[][]) => {
   return board[pos.y][pos.x];
 };

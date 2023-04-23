@@ -1,7 +1,16 @@
 import { Square, MousePos } from "../interfaces/Chess";
+import { getPiece } from "./position";
 
 const getOutOfBondsMoves = (pos: MousePos) => {
   if (pos.x < 0 || pos.x > 7 || pos.y < 0 || pos.y > 7) return true;
+  return false;
+};
+
+const getAllyCollision = (piece: string, piece2: string) => {
+  const blackPiece = ["K", "Q", "R", "B", "N", "P"];
+  const whitePiece = ["k", "q", "r", "b", "n", "p"];
+  if (blackPiece.includes(piece) && blackPiece.includes(piece2)) return true;
+  if (whitePiece.includes(piece) && whitePiece.includes(piece2)) return true;
   return false;
 };
 const getValidMovesForWhitePawn = (
@@ -34,8 +43,9 @@ export const getPawnValidMoves = (
   pos: MousePos,
   availableBoard: boolean[][],
   isWhite: boolean,
-  isWhiteToPlay: boolean
-) => {
+  isWhiteToPlay: boolean,
+  board: string[][]
+): boolean[][] => {
   if (isWhiteToPlay) {
     if (isWhite) {
       getValidMovesForWhitePawn(pos, availableBoard);
@@ -54,11 +64,18 @@ export const getPawnValidMoves = (
 
 export const getKingValidMoves = (
   pos: MousePos,
-  availableBoard: boolean[][]
-) => {
+  availableBoard: boolean[][],
+  isWhite: boolean,
+  isWhiteToPlay: boolean,
+  board: string[][]
+): boolean[][] => {
   for (let y = pos.y - 1; y <= pos.y + 1; y++) {
     for (let x = pos.x - 1; x <= pos.x + 1; x++) {
       if (getOutOfBondsMoves({ y, x }) || (pos.x === x && pos.y === y))
+        continue;
+      if (
+        getAllyCollision(isWhiteToPlay ? "k" : "K", getPiece({ y, x }, board))
+      )
         continue;
       availableBoard[y][x] = true;
     }
@@ -67,11 +84,19 @@ export const getKingValidMoves = (
 };
 export const getQueenValidMoves = (
   pos: MousePos,
-  availableBoard: boolean[][]
-) => {
+  availableBoard: boolean[][],
+  isWhite: boolean,
+  isWhiteToPlay: boolean,
+  board: string[][]
+): boolean[][] => {
   for (let y = 0; y < 8; y++) {
     for (let x = 0; x < 8; x++) {
       if (pos.x === x && pos.y === y) continue;
+      if (
+        getAllyCollision(isWhiteToPlay ? "q" : "Q", getPiece({ y, x }, board))
+      ) {
+        continue;
+      }
       availableBoard[y][x] = true;
     }
   }
@@ -80,24 +105,41 @@ export const getQueenValidMoves = (
 
 export const getRookValidMoves = (
   pos: MousePos,
-  availableBoard: boolean[][]
-) => {
-  for (let y = 0; y < 8; y++) {
-    if (pos.y === y) continue;
-    availableBoard[y][pos.x] = true;
-  }
-  for (let x = 0; x < 8; x++) {
-    if (pos.x === x) continue;
+  availableBoard: boolean[][],
+  isWhite: boolean,
+  isWhiteToPlay: boolean,
+  board: string[][]
+): boolean[][] => {
+  for (let x = pos.x + 1; x < 8; x++) {
+    const piece = getPiece({ y: pos.y, x }, board);
+    if (getAllyCollision(isWhiteToPlay ? "r" : "R", piece)) break;
     availableBoard[pos.y][x] = true;
   }
-
+  for (let x = pos.x - 1; x >= 0; x--) {
+    const piece = getPiece({ y: pos.y, x }, board);
+    if (getAllyCollision(isWhiteToPlay ? "r" : "R", piece)) break;
+    availableBoard[pos.y][x] = true;
+  }
+  for (let y = pos.y + 1; y < 8; y++) {
+    const piece = getPiece({ y, x: pos.x }, board);
+    if (getAllyCollision(isWhiteToPlay ? "r" : "R", piece)) break;
+    availableBoard[y][pos.x] = true;
+  }
+  for (let y = pos.y - 1; y >= 0; y--) {
+    const piece = getPiece({ y, x: pos.x }, board);
+    if (getAllyCollision(isWhiteToPlay ? "r" : "R", piece)) break;
+    availableBoard[y][pos.x] = true;
+  }
   return availableBoard;
 };
 
 export const getBishopValidMoves = (
   pos: MousePos,
-  availableBoard: boolean[][]
-) => {
+  availableBoard: boolean[][],
+  isWhite: boolean,
+  isWhiteToPlay: boolean,
+  board: string[][]
+): boolean[][] => {
   const x = pos.x;
   const y = pos.y;
 
@@ -110,7 +152,13 @@ export const getBishopValidMoves = (
 
   for (const dir of directions) {
     let i = 1;
-    while (!getOutOfBondsMoves({ y: y + i * dir.y, x: x + i * dir.x })) {
+    while (
+      !getOutOfBondsMoves({ y: y + i * dir.y, x: x + i * dir.x }) &&
+      !getAllyCollision(
+        isWhiteToPlay ? "b" : "B",
+        getPiece({ y: y + i * dir.y, x: x + i * dir.x }, board)
+      )
+    ) {
       if (availableBoard[y + i * dir.y][x + i * dir.x]) break;
       availableBoard[y + i * dir.y][x + i * dir.x] = true;
       i++;
@@ -122,16 +170,37 @@ export const getBishopValidMoves = (
 
 export const getKnightValidMoves = (
   pos: MousePos,
-  availableBoard: boolean[][]
-) => {
-  if (!getOutOfBondsMoves({ y: pos.y + 2, x: pos.x + 1 }))
-    availableBoard[pos.y + 2][pos.x + 1] = true;
-  if (!getOutOfBondsMoves({ y: pos.y + 2, x: pos.x - 1 }))
-    availableBoard[pos.y + 2][pos.x - 1] = true;
-  if (!getOutOfBondsMoves({ y: pos.y - 2, x: pos.x + 1 }))
-    availableBoard[pos.y - 2][pos.x + 1] = true;
-  if (!getOutOfBondsMoves({ y: pos.y - 2, x: pos.x - 1 }))
-    availableBoard[pos.y - 2][pos.x - 1] = true;
+  availableBoard: boolean[][],
+  isWhite: boolean,
+  isWhiteToPlay: boolean,
+  board: string[][]
+): boolean[][] => {
+  const moves: { x: number; y: number }[] = [
+    { x: 1, y: 2 },
+    { x: 2, y: 1 },
+    { x: 2, y: -1 },
+    { x: 1, y: -2 },
+    { x: -1, y: -2 },
+    { x: -2, y: -1 },
+    { x: -2, y: 1 },
+    { x: -1, y: 2 },
+  ];
+
+  moves.forEach((move) => {
+    const newY = pos.y + move.y;
+    const newX = pos.x + move.x;
+
+    if (getOutOfBondsMoves({ y: newY, x: newX })) return;
+    if (
+      getAllyCollision(
+        isWhiteToPlay ? "n" : "N",
+        getPiece({ y: newY, x: newX }, board)
+      )
+    )
+      return;
+    if (availableBoard[newY][newX]) return;
+    availableBoard[newY][newX] = true;
+  });
 
   return availableBoard;
 };

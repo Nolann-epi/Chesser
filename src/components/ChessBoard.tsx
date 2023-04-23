@@ -57,13 +57,15 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
   const getMousePosition = (e: any, pos: MousePos) => {
     if (selectedSquare.piece === "") {
       setselectedSquare({ x: pos.x, y: pos.y, piece: board[pos.y][pos.x] });
+
       checkValidMoves(
         pos,
         getPiece(pos, board),
         availableBoard,
         setAvailableBoard,
         game.turn % 2 == 0,
-        game.isWhite
+        game.isWhite,
+        board
       );
     }
     if (selectedSquare.piece !== "") {

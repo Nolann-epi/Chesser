@@ -13,3 +13,11 @@ export interface Game {
   isWhite: boolean;
   turn: number;
 }
+
+export interface PropsFunction {
+  pos: MousePos;
+  availableBoard: boolean[][];
+  isWhite: boolean;
+  isWhiteToPlay: boolean;
+  board: string[][];
+}
