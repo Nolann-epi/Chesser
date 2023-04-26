@@ -6,7 +6,7 @@ import { useState } from "react";
 
 export default function Home() {
   const [game, setGame] = useState<Game>({
-    isWhite: false,
+    isWhite: true,
     turn: 0,
   });
   return (

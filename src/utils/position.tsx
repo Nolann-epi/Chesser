@@ -36,6 +36,15 @@ export const getAvailabilty = (pos: MousePos, availableBoard: boolean[][]) => {
   return availableBoard[pos.y][pos.x];
 };
 
+export const hasAvailableMoves = (availableBoard: boolean[][]) => {
+  for (let y = 0; y < availableBoard.length; y++) {
+    for (let x = 0; x < availableBoard[y].length; x++) {
+      if (availableBoard[y][x]) return true;
+    }
+  }
+  return false;
+};
+
 export const resetAvailableBoard = (availableBoard: boolean[][]) => {
   for (let y = 0; y < availableBoard.length; y++) {
     for (let x = 0; x < availableBoard[y].length; x++) {

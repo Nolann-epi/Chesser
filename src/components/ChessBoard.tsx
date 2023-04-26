@@ -6,7 +6,12 @@ import {
 } from "../models/Boards";
 import ChessPiece from "./ChessPiece";
 import { Square, MousePos, Game } from "../interfaces/Chess";
-import { checkValidMoves, getAvailabilty, getPiece } from "../utils/position";
+import {
+  checkValidMoves,
+  getAvailabilty,
+  getPiece,
+  hasAvailableMoves,
+} from "../utils/position";
 
 interface ChessBoardProps {
   setGame: React.Dispatch<React.SetStateAction<Game>>;
@@ -56,8 +61,6 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
 
   const getMousePosition = (e: any, pos: MousePos) => {
     if (selectedSquare.piece === "") {
-      setselectedSquare({ x: pos.x, y: pos.y, piece: board[pos.y][pos.x] });
-
       checkValidMoves(
         pos,
         getPiece(pos, board),
@@ -67,6 +70,9 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         game.isWhite,
         board
       );
+      if (hasAvailableMoves(availableBoard)) {
+        setselectedSquare({ x: pos.x, y: pos.y, piece: board[pos.y][pos.x] });
+      }
     }
     if (selectedSquare.piece !== "") {
       if (getAvailabilty(pos, availableBoard)) {
