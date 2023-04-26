@@ -36,6 +36,27 @@ export const getAvailabilty = (pos: MousePos, availableBoard: boolean[][]) => {
   return availableBoard[pos.y][pos.x];
 };
 
+export const getOutOfBondsMoves = (pos: MousePos) => {
+  if (pos.x < 0 || pos.x > 7 || pos.y < 0 || pos.y > 7) return true;
+  return false;
+};
+
+export const getAllyCollision = (piece: string, piece2: string) => {
+  const blackPiece = ["K", "Q", "R", "B", "N", "P"];
+  const whitePiece = ["k", "q", "r", "b", "n", "p"];
+  if (blackPiece.includes(piece) && blackPiece.includes(piece2)) return true;
+  if (whitePiece.includes(piece) && whitePiece.includes(piece2)) return true;
+  return false;
+};
+
+export const getEnemyCollision = (piece: string, piece2: string) => {
+  const blackPiece = ["K", "Q", "R", "B", "N", "P"];
+  const whitePiece = ["k", "q", "r", "b", "n", "p"];
+  if (blackPiece.includes(piece) && whitePiece.includes(piece2)) return true;
+  if (whitePiece.includes(piece) && blackPiece.includes(piece2)) return true;
+  return false;
+};
+
 export const hasAvailableMoves = (availableBoard: boolean[][]) => {
   for (let y = 0; y < availableBoard.length; y++) {
     for (let x = 0; x < availableBoard[y].length; x++) {

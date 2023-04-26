@@ -11,6 +11,7 @@ import {
   getAvailabilty,
   getPiece,
   hasAvailableMoves,
+  getEnemyCollision,
 } from "../utils/position";
 
 interface ChessBoardProps {
@@ -22,7 +23,7 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
     game.isWhite ? startingBoardWhite : startingBoardBlack
   );
   const [availableBoard, setAvailableBoard] = useState(startingAvailableBoard);
-  const [selectedSquare, setselectedSquare] = useState<Square>({
+  const [selectedPiece, setselectedPiece] = useState<Square>({
     x: 0,
     y: 0,
     piece: "",
@@ -44,11 +45,16 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
 
   const handleSwitchPosition = () => {
     const newBoard = board.slice();
-    newBoard[selectedSquare.y][selectedSquare.x] = selectedPosition.piece; // remove pawn at (6,3)
-    newBoard[selectedPosition.y][selectedPosition.x] = selectedSquare.piece; // add pawn at (4,3)
+    if (selectedPosition.piece === "x") {
+      newBoard[selectedPiece.y][selectedPiece.x] = selectedPosition.piece; // remove pawn at (6,3)
+      newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece; // add pawn at (4,3)
+    } else {
+      newBoard[selectedPiece.y][selectedPiece.x] = "x"; // remove pawn at (6,3)
+      newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece; // add pawn at (4,3)
+    }
     setBoard(newBoard);
     setSelectedPosition({ x: 0, y: 0, piece: "" });
-    setselectedSquare({ x: 0, y: 0, piece: "" });
+    setselectedPiece({ x: 0, y: 0, piece: "" });
     setSwitchPosition(false);
     resetAvailableBoard();
     setGame({ ...game, turn: game.turn + 1 });
@@ -60,7 +66,7 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
   }, [switchPosition]);
 
   const getMousePosition = (e: any, pos: MousePos) => {
-    if (selectedSquare.piece === "") {
+    if (selectedPiece.piece === "") {
       checkValidMoves(
         pos,
         getPiece(pos, board),
@@ -71,15 +77,15 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         board
       );
       if (hasAvailableMoves(availableBoard)) {
-        setselectedSquare({ x: pos.x, y: pos.y, piece: board[pos.y][pos.x] });
+        setselectedPiece({ x: pos.x, y: pos.y, piece: board[pos.y][pos.x] });
       }
     }
-    if (selectedSquare.piece !== "") {
+    if (selectedPiece.piece !== "") {
       if (getAvailabilty(pos, availableBoard)) {
         setSelectedPosition({ x: pos.x, y: pos.y, piece: board[pos.y][pos.x] });
         setSwitchPosition(true);
       } else {
-        setselectedSquare({ x: 0, y: 0, piece: "" });
+        setselectedPiece({ x: 0, y: 0, piece: "" });
         resetAvailableBoard();
       }
     }
@@ -102,6 +108,7 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
               <ChessPiece
                 letter={col}
                 isAvailable={availableBoard[rowIndex][colIndex]}
+                turn={game.turn}
               />
             </div>
           ))}

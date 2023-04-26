@@ -1,18 +1,11 @@
 import { Square, MousePos } from "../interfaces/Chess";
-import { getPiece } from "./position";
+import {
+  getPiece,
+  getOutOfBondsMoves,
+  getEnemyCollision,
+  getAllyCollision,
+} from "./position";
 
-const getOutOfBondsMoves = (pos: MousePos) => {
-  if (pos.x < 0 || pos.x > 7 || pos.y < 0 || pos.y > 7) return true;
-  return false;
-};
-
-const getAllyCollision = (piece: string, piece2: string) => {
-  const blackPiece = ["K", "Q", "R", "B", "N", "P"];
-  const whitePiece = ["k", "q", "r", "b", "n", "p"];
-  if (blackPiece.includes(piece) && blackPiece.includes(piece2)) return true;
-  if (whitePiece.includes(piece) && whitePiece.includes(piece2)) return true;
-  return false;
-};
 const getValidMovesForWhitePawn = (
   pos: MousePos,
   availableBoard: boolean[][]
@@ -77,6 +70,12 @@ export const getKingValidMoves = (
         getAllyCollision(isWhiteToPlay ? "k" : "K", getPiece({ y, x }, board))
       )
         continue;
+      if (
+        getEnemyCollision(isWhiteToPlay ? "k" : "K", getPiece({ y, x }, board))
+      ) {
+        availableBoard[y][x] = true;
+        continue;
+      }
       availableBoard[y][x] = true;
     }
   }
@@ -104,21 +103,37 @@ export const getRookValidMoves = (
   for (let x = pos.x + 1; x < 8; x++) {
     const piece = getPiece({ y: pos.y, x }, board);
     if (getAllyCollision(isWhiteToPlay ? "r" : "R", piece)) break;
+    if (getEnemyCollision(isWhiteToPlay ? "r" : "R", piece)) {
+      availableBoard[pos.y][x] = true;
+      break;
+    }
     availableBoard[pos.y][x] = true;
   }
   for (let x = pos.x - 1; x >= 0; x--) {
     const piece = getPiece({ y: pos.y, x }, board);
     if (getAllyCollision(isWhiteToPlay ? "r" : "R", piece)) break;
+    if (getEnemyCollision(isWhiteToPlay ? "r" : "R", piece)) {
+      availableBoard[pos.y][x] = true;
+      break;
+    }
     availableBoard[pos.y][x] = true;
   }
   for (let y = pos.y + 1; y < 8; y++) {
     const piece = getPiece({ y, x: pos.x }, board);
     if (getAllyCollision(isWhiteToPlay ? "r" : "R", piece)) break;
+    if (getEnemyCollision(isWhiteToPlay ? "r" : "R", piece)) {
+      availableBoard[y][pos.x] = true;
+      break;
+    }
     availableBoard[y][pos.x] = true;
   }
   for (let y = pos.y - 1; y >= 0; y--) {
     const piece = getPiece({ y, x: pos.x }, board);
     if (getAllyCollision(isWhiteToPlay ? "r" : "R", piece)) break;
+    if (getEnemyCollision(isWhiteToPlay ? "r" : "R", piece)) {
+      availableBoard[y][pos.x] = true;
+      break;
+    }
     availableBoard[y][pos.x] = true;
   }
   return availableBoard;
@@ -151,6 +166,15 @@ export const getBishopValidMoves = (
       )
     ) {
       if (availableBoard[y + i * dir.y][x + i * dir.x]) break;
+      if (
+        getEnemyCollision(
+          isWhiteToPlay ? "b" : "B",
+          getPiece({ y: y + i * dir.y, x: x + i * dir.x }, board)
+        )
+      ) {
+        availableBoard[y + i * dir.y][x + i * dir.x] = true;
+        break;
+      }
       availableBoard[y + i * dir.y][x + i * dir.x] = true;
       i++;
     }
@@ -189,6 +213,15 @@ export const getKnightValidMoves = (
       )
     )
       return;
+    if (
+      getEnemyCollision(
+        isWhiteToPlay ? "n" : "N",
+        getPiece({ y: newY, x: newX }, board)
+      )
+    ) {
+      availableBoard[newY][newX] = true;
+      return;
+    }
     if (availableBoard[newY][newX]) return;
     availableBoard[newY][newX] = true;
   });
