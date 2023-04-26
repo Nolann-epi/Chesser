@@ -1,34 +1,80 @@
 import { Square, MousePos } from "../interfaces/Chess";
 import {
   getPiece,
-  getOutOfBondsMoves,
+  isOutOfBondsMoves,
   getEnemyCollision,
   getAllyCollision,
+  isEnemyPiece,
+  isPiece,
 } from "./position";
 
 const getValidMovesForWhitePawn = (
   pos: MousePos,
-  availableBoard: boolean[][]
+  availableBoard: boolean[][],
+  board: string[][]
 ) => {
   if (pos.y === 6) {
-    availableBoard[pos.y - 1][pos.x] = true;
-    availableBoard[pos.y - 2][pos.x] = true;
+    if (
+      !isPiece({ y: pos.y - 1, x: pos.x }, board) &&
+      !isPiece({ y: pos.y - 2, x: pos.x }, board)
+    ) {
+      availableBoard[pos.y - 1][pos.x] = true;
+      availableBoard[pos.y - 2][pos.x] = true;
+    }
   } else {
-    if (getOutOfBondsMoves({ y: pos.y - 1, x: pos.x })) return;
-    availableBoard[pos.y - 1][pos.x] = true;
+    if (
+      !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x }) &&
+      !getPiece({ y: pos.y - 1, x: pos.x }, board)
+    ) {
+      availableBoard[pos.y - 1][pos.x] = true;
+    }
+  }
+  if (
+    !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x + 1 }) &&
+    isEnemyPiece({ y: pos.y - 1, x: pos.x + 1 }, board, "black")
+  ) {
+    availableBoard[pos.y - 1][pos.x + 1] = true;
+  }
+  if (
+    !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x - 1 }) &&
+    isEnemyPiece({ y: pos.y - 1, x: pos.x - 1 }, board, "black")
+  ) {
+    availableBoard[pos.y - 1][pos.x - 1] = true;
   }
 };
 
 const getValidMovesForBlackPawn = (
   pos: MousePos,
-  availableBoard: boolean[][]
+  availableBoard: boolean[][],
+  board: string[][]
 ) => {
   if (pos.y === 1) {
-    availableBoard[pos.y + 1][pos.x] = true;
-    availableBoard[pos.y + 2][pos.x] = true;
+    if (
+      !isPiece({ y: pos.y + 1, x: pos.x }, board) &&
+      !isPiece({ y: pos.y + 2, x: pos.x }, board)
+    ) {
+      availableBoard[pos.y + 1][pos.x] = true;
+      availableBoard[pos.y + 2][pos.x] = true;
+    }
   } else {
-    if (getOutOfBondsMoves({ y: pos.y + 1, x: pos.x })) return;
-    availableBoard[pos.y + 1][pos.x] = true;
+    if (
+      !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x }) &&
+      !isPiece({ y: pos.y + 1, x: pos.x }, board)
+    ) {
+      availableBoard[pos.y + 1][pos.x] = true;
+    }
+  }
+  if (
+    !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x + 1 }) &&
+    isEnemyPiece({ y: pos.y + 1, x: pos.x + 1 }, board, "white")
+  ) {
+    availableBoard[pos.y + 1][pos.x + 1] = true;
+  }
+  if (
+    !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x - 1 }) &&
+    isEnemyPiece({ y: pos.y + 1, x: pos.x - 1 }, board, "white")
+  ) {
+    availableBoard[pos.y + 1][pos.x - 1] = true;
   }
 };
 
@@ -41,15 +87,15 @@ export const getPawnValidMoves = (
 ): boolean[][] => {
   if (isWhiteToPlay) {
     if (isWhite) {
-      getValidMovesForWhitePawn(pos, availableBoard);
+      getValidMovesForWhitePawn(pos, availableBoard, board);
     } else {
-      getValidMovesForBlackPawn(pos, availableBoard);
+      getValidMovesForBlackPawn(pos, availableBoard, board);
     }
   } else {
     if (isWhite) {
-      getValidMovesForBlackPawn(pos, availableBoard);
+      getValidMovesForBlackPawn(pos, availableBoard, board);
     } else {
-      getValidMovesForWhitePawn(pos, availableBoard);
+      getValidMovesForWhitePawn(pos, availableBoard, board);
     }
   }
   return availableBoard;
@@ -64,8 +110,7 @@ export const getKingValidMoves = (
 ): boolean[][] => {
   for (let y = pos.y - 1; y <= pos.y + 1; y++) {
     for (let x = pos.x - 1; x <= pos.x + 1; x++) {
-      if (getOutOfBondsMoves({ y, x }) || (pos.x === x && pos.y === y))
-        continue;
+      if (isOutOfBondsMoves({ y, x }) || (pos.x === x && pos.y === y)) continue;
       if (
         getAllyCollision(isWhiteToPlay ? "k" : "K", getPiece({ y, x }, board))
       )
@@ -159,7 +204,7 @@ export const getBishopValidMoves = (
   for (const dir of directions) {
     let i = 1;
     while (
-      !getOutOfBondsMoves({ y: y + i * dir.y, x: x + i * dir.x }) &&
+      !isOutOfBondsMoves({ y: y + i * dir.y, x: x + i * dir.x }) &&
       !getAllyCollision(
         isWhiteToPlay ? "b" : "B",
         getPiece({ y: y + i * dir.y, x: x + i * dir.x }, board)
@@ -205,7 +250,7 @@ export const getKnightValidMoves = (
     const newY = pos.y + move.y;
     const newX = pos.x + move.x;
 
-    if (getOutOfBondsMoves({ y: newY, x: newX })) return;
+    if (isOutOfBondsMoves({ y: newY, x: newX })) return;
     if (
       getAllyCollision(
         isWhiteToPlay ? "n" : "N",
