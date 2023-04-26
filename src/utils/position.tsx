@@ -19,9 +19,12 @@ export const checkValidMoves = (
     ["R", getValidMoves.getRookValidMoves],
     ["B", getValidMoves.getBishopValidMoves],
     ["N", getValidMoves.getKnightValidMoves],
-    ["P", getValidMoves.getPawnValidMoves],
+    ["P", getValidMoves.getBlackPawnValidMoves],
+    ["p", getValidMoves.getWhitePawnValidMoves],
   ]);
-  const getValidMovesFn = getMoves.get(piece.toUpperCase());
+  const getValidMovesFn = getMoves.get(
+    piece.toUpperCase() === "P" ? piece : piece.toUpperCase()
+  );
   if (getValidMovesFn) {
     setBoard(
       getValidMovesFn(pos, availableBoard, isWhite, isWhiteToPlay, board)

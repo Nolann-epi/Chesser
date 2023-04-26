@@ -8,94 +8,133 @@ import {
   isPiece,
 } from "./position";
 
-const getValidMovesForWhitePawn = (
-  pos: MousePos,
-  availableBoard: boolean[][],
-  board: string[][]
-) => {
-  if (pos.y === 6) {
-    if (
-      !isPiece({ y: pos.y - 1, x: pos.x }, board) &&
-      !isPiece({ y: pos.y - 2, x: pos.x }, board)
-    ) {
-      availableBoard[pos.y - 1][pos.x] = true;
-      availableBoard[pos.y - 2][pos.x] = true;
-    }
-  } else {
-    if (
-      !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x }) &&
-      !getPiece({ y: pos.y - 1, x: pos.x }, board)
-    ) {
-      availableBoard[pos.y - 1][pos.x] = true;
-    }
-  }
-  if (
-    !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x + 1 }) &&
-    isEnemyPiece({ y: pos.y - 1, x: pos.x + 1 }, board, "black")
-  ) {
-    availableBoard[pos.y - 1][pos.x + 1] = true;
-  }
-  if (
-    !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x - 1 }) &&
-    isEnemyPiece({ y: pos.y - 1, x: pos.x - 1 }, board, "black")
-  ) {
-    availableBoard[pos.y - 1][pos.x - 1] = true;
-  }
-};
-
-const getValidMovesForBlackPawn = (
-  pos: MousePos,
-  availableBoard: boolean[][],
-  board: string[][]
-) => {
-  if (pos.y === 1) {
-    if (
-      !isPiece({ y: pos.y + 1, x: pos.x }, board) &&
-      !isPiece({ y: pos.y + 2, x: pos.x }, board)
-    ) {
-      availableBoard[pos.y + 1][pos.x] = true;
-      availableBoard[pos.y + 2][pos.x] = true;
-    }
-  } else {
-    if (
-      !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x }) &&
-      !isPiece({ y: pos.y + 1, x: pos.x }, board)
-    ) {
-      availableBoard[pos.y + 1][pos.x] = true;
-    }
-  }
-  if (
-    !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x + 1 }) &&
-    isEnemyPiece({ y: pos.y + 1, x: pos.x + 1 }, board, "white")
-  ) {
-    availableBoard[pos.y + 1][pos.x + 1] = true;
-  }
-  if (
-    !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x - 1 }) &&
-    isEnemyPiece({ y: pos.y + 1, x: pos.x - 1 }, board, "white")
-  ) {
-    availableBoard[pos.y + 1][pos.x - 1] = true;
-  }
-};
-
-export const getPawnValidMoves = (
+export const getWhitePawnValidMoves = (
   pos: MousePos,
   availableBoard: boolean[][],
   isWhite: boolean,
   isWhiteToPlay: boolean,
   board: string[][]
 ): boolean[][] => {
-  if (isWhiteToPlay) {
-    if (isWhite) {
-      getValidMovesForWhitePawn(pos, availableBoard, board);
+  if (isWhite) {
+    if (pos.y === 6) {
+      if (!isPiece({ y: pos.y - 1, x: pos.x }, board)) {
+        availableBoard[pos.y - 1][pos.x] = true;
+      }
+      if (!isPiece({ y: pos.y - 2, x: pos.x }, board))
+        availableBoard[pos.y - 2][pos.x] = true;
     } else {
-      getValidMovesForBlackPawn(pos, availableBoard, board);
+      if (
+        !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x }) &&
+        !isPiece({ y: pos.y - 1, x: pos.x }, board)
+      ) {
+        availableBoard[pos.y - 1][pos.x] = true;
+      }
+    }
+    if (
+      !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x + 1 }) &&
+      isEnemyPiece({ y: pos.y - 1, x: pos.x + 1 }, board, "black")
+    ) {
+      availableBoard[pos.y - 1][pos.x + 1] = true;
+    }
+    if (
+      !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x - 1 }) &&
+      isEnemyPiece({ y: pos.y - 1, x: pos.x - 1 }, board, "black")
+    ) {
+      availableBoard[pos.y - 1][pos.x - 1] = true;
     }
   } else {
-    if (isWhite) {
-      getValidMovesForBlackPawn(pos, availableBoard, board);
+    if (pos.y === 1) {
+      if (!isPiece({ y: pos.y + 1, x: pos.x }, board)) {
+        availableBoard[pos.y + 1][pos.x] = true;
+      }
+      if (!isPiece({ y: pos.y + 2, x: pos.x }, board))
+        availableBoard[pos.y + 2][pos.x] = true;
     } else {
-      getValidMovesForWhitePawn(pos, availableBoard, board);
+      if (
+        !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x }) &&
+        !isPiece({ y: pos.y + 1, x: pos.x }, board)
+      ) {
+        availableBoard[pos.y + 1][pos.x] = true;
+      }
+    }
+    if (
+      !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x + 1 }) &&
+      isEnemyPiece({ y: pos.y + 1, x: pos.x + 1 }, board, "black")
+    ) {
+      availableBoard[pos.y + 1][pos.x + 1] = true;
+    }
+    if (
+      !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x - 1 }) &&
+      isEnemyPiece({ y: pos.y + 1, x: pos.x - 1 }, board, "black")
+    ) {
+      availableBoard[pos.y + 1][pos.x - 1] = true;
+    }
+  }
+
+  return availableBoard;
+};
+
+export const getBlackPawnValidMoves = (
+  pos: MousePos,
+  availableBoard: boolean[][],
+  isWhite: boolean,
+  isWhiteToPlay: boolean,
+  board: string[][]
+): boolean[][] => {
+  if (isWhite) {
+    if (pos.y === 1) {
+      if (!isPiece({ y: pos.y + 1, x: pos.x }, board)) {
+        availableBoard[pos.y + 1][pos.x] = true;
+      }
+      if (!isPiece({ y: pos.y + 2, x: pos.x }, board))
+        availableBoard[pos.y + 2][pos.x] = true;
+    } else {
+      if (
+        !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x }) &&
+        !isPiece({ y: pos.y + 1, x: pos.x }, board)
+      ) {
+        availableBoard[pos.y + 1][pos.x] = true;
+      }
+    }
+    if (
+      !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x + 1 }) &&
+      isEnemyPiece({ y: pos.y + 1, x: pos.x + 1 }, board, "white")
+    ) {
+      availableBoard[pos.y + 1][pos.x + 1] = true;
+    }
+    if (
+      !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x - 1 }) &&
+      isEnemyPiece({ y: pos.y + 1, x: pos.x - 1 }, board, "white")
+    ) {
+      availableBoard[pos.y + 1][pos.x - 1] = true;
+    }
+  } else {
+    if (pos.y === 6) {
+      if (!isPiece({ y: pos.y - 1, x: pos.x }, board)) {
+        availableBoard[pos.y - 1][pos.x] = true;
+      }
+      if (!isPiece({ y: pos.y - 2, x: pos.x }, board))
+        availableBoard[pos.y - 2][pos.x] = true;
+    } else {
+      if (
+        !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x }) &&
+        !isPiece({ y: pos.y - 1, x: pos.x }, board)
+      ) {
+        availableBoard[pos.y - 1][pos.x] = true;
+      }
+    }
+
+    if (
+      !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x + 1 }) &&
+      isEnemyPiece({ y: pos.y - 1, x: pos.x + 1 }, board, "white")
+    ) {
+      availableBoard[pos.y - 1][pos.x + 1] = true;
+    }
+    if (
+      !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x - 1 }) &&
+      isEnemyPiece({ y: pos.y - 1, x: pos.x - 1 }, board, "white")
+    ) {
+      availableBoard[pos.y - 1][pos.x - 1] = true;
     }
   }
   return availableBoard;
