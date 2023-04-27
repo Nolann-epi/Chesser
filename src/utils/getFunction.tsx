@@ -111,6 +111,19 @@ const checkKingCheck = (
   return availableBoard;
 };
 
+const isCheckMate = (board: string[][], game: Game) => {
+  const king = game.turn % 2 == 0 ? "K" : "k";
+  const pos = getKingPosition(board, king);
+};
+
+export const isCheck = (board: string[][], game: Game) => {
+  const king = game.turn % 2 == 0 ? "K" : "k";
+  const pos = getKingPosition(board, king);
+  console.log("isCheck of ", king);
+  console.log(isCheckBoard(board, { y: pos.y, x: pos.x, piece: king }, game));
+  isCheckMate(board, game);
+};
+
 export const getEnPassantRow = (enPassant: number[]) => {
   for (let i = 0; i < enPassant.length; i++) {
     if (enPassant[i] === 1) return i;

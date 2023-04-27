@@ -77,6 +77,5 @@ export const canKnightCheck = (
     if (getPiece({ y: newY, x: newX }, verificationBoard) === king.piece)
       foundKing = true;
   });
-  console.log(foundKing);
   return foundKing;
 };

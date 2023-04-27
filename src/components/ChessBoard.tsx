@@ -12,8 +12,8 @@ import {
   getPiece,
   hasAvailableMoves,
   getKingPosition,
+  isCheck,
 } from "../utils/getFunction";
-import { isCheckBoard } from "@/utils/getValidMoves/King";
 
 interface ChessBoardProps {
   setGame: React.Dispatch<React.SetStateAction<Game>>;
@@ -102,6 +102,7 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
       });
     }
+    isCheck(board, game);
   };
 
   useEffect(() => {

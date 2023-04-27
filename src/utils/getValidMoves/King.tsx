@@ -2,6 +2,7 @@ import { Game, MousePos, Square } from "@/interfaces/Chess";
 import {
   getAllyCollision,
   getEnemyCollision,
+  getKingPosition,
   getPiece,
   isEnemyPiece,
   isOutOfBondsMoves,
