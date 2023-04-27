@@ -45,19 +45,19 @@ export const isCheckBoard = (board: string[][], king: Square, game: Game) => {
       if (board[y][x] === "") continue;
       if (getPiece({ y, x }, board) === (king.piece === "K" ? "r" : "R")) {
         if (canRookCheck({ y, x }, board, king)) {
-          console.log("Rook in ", { y, x }, " can check the king");
+          //console.log("Rook in ", { y, x }, " can check the king");
           return true;
         }
       }
       if (getPiece({ y, x }, board) === (king.piece === "K" ? "n" : "N")) {
         if (canKnightCheck({ y, x }, board, king)) {
-          console.log("Knight in ", { y, x }, " can check the king");
+          //console.log("Knight in ", { y, x }, " can check the king");
           return true;
         }
       }
       if (getPiece({ y, x }, board) === (king.piece === "K" ? "b" : "B")) {
         if (canBishopCheck({ y, x }, board, king)) {
-          console.log("Bishop in ", { y, x }, " can check the king");
+          //console.log("Bishop in ", { y, x }, " can check the king");
           return true;
         }
       }
@@ -66,21 +66,21 @@ export const isCheckBoard = (board: string[][], king: Square, game: Game) => {
           canRookCheck({ y, x }, board, king) ||
           canBishopCheck({ y, x }, board, king)
         ) {
-          console.log("Queen in ", { y, x }, " can check the king");
+          //console.log("Queen in ", { y, x }, " can check the king");
           return true;
         }
       }
 
       if (getPiece({ y, x }, board) === "P" && king.piece === "k") {
         if (canBlackPawnCheck({ y, x }, board, king, game)) {
-          console.log("Pawn in ", { y, x }, " can check the king");
+          //console.log("Pawn in ", { y, x }, " can check the king");
           return true;
         }
       }
 
       if (getPiece({ y, x }, board) === "p" && king.piece === "K") {
         if (canWhitePawnCheck({ y, x }, board, king, game)) {
-          console.log("Pawn in ", { y, x }, " can check the king");
+          //console.log("Pawn in ", { y, x }, " can check the king");
           return true;
         }
       }

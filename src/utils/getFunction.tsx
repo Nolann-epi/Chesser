@@ -7,18 +7,26 @@ import { getBishopValidMoves } from "./getValidMoves/Bishop";
 import { getKnightValidMoves } from "./getValidMoves/Knight";
 import { getBlackPawnValidMoves } from "./getValidMoves/BlackPawn";
 import { getWhitePawnValidMoves } from "./getValidMoves/WhitePawn";
+import { checkMateAvailableBoard } from "@/models/Boards";
+import { useState } from "react";
 
 export const checkValidMoves = (
   pos: MousePos,
   piece: string,
   availableBoard: boolean[][],
-  setBoard: React.Dispatch<React.SetStateAction<boolean[][]>>,
   isWhiteToPlay: boolean,
   game: Game,
-  board: string[][]
+  board: string[][],
+  isCheckmate: boolean,
+  setBoard?: React.Dispatch<React.SetStateAction<boolean[][]>>
 ) => {
-  if (isWhiteToPlay && piece === piece.toLocaleUpperCase()) return;
-  if (!isWhiteToPlay && piece !== piece.toLocaleUpperCase()) return;
+  if (!isCheckmate) {
+    if (isWhiteToPlay && piece === piece.toLocaleUpperCase()) return;
+    if (!isWhiteToPlay && piece !== piece.toLocaleUpperCase()) return;
+  }
+  if (hasAvailableMoves(availableBoard)) {
+    resetAvailableBoard(availableBoard);
+  }
   const getMoves = new Map([
     ["K", getKingValidMoves],
     ["Q", getQueenValidMoves],
@@ -40,9 +48,22 @@ export const checkValidMoves = (
       board,
       game
     );
-
-    setBoard(
-      checkKingCheck(
+    if (!isCheckmate && setBoard) {
+      setBoard(
+        checkKingCheck(
+          game,
+          {
+            x: pos.x,
+            y: pos.y,
+            piece: board[pos.y][pos.x],
+          },
+          array,
+          board,
+          false
+        )
+      );
+    } else {
+      const newArray = checkKingCheck(
         game,
         {
           x: pos.x,
@@ -50,9 +71,12 @@ export const checkValidMoves = (
           piece: board[pos.y][pos.x],
         },
         array,
-        board
-      )
-    );
+        board,
+        true
+      );
+      console.log(newArray);
+      return hasAvailableMoves(newArray);
+    }
   }
 };
 
@@ -60,9 +84,10 @@ const kingProjection = (
   pos: MousePos,
   board: string[][],
   game: Game,
-  piece: Square
+  piece: Square,
+  isCheckmate: boolean
 ) => {
-  const isWhiteToPlay = game.turn % 2 == 0;
+  const isWhiteToPlay = isCheckmate ? game.turn % 2 == 1 : game.turn % 2 == 0;
   const kingToFind = isWhiteToPlay ? "k" : "K";
   const kingPos = getKingPosition(board, kingToFind);
   const verificationBoard = board.map((row) => [...row]);
@@ -83,10 +108,10 @@ const isKingInCheck = (
   pos: MousePos,
   board: string[][],
   game: Game,
-  piece: Square
+  piece: Square,
+  isCheckmate: boolean
 ) => {
-  if (kingProjection(pos, board, game, piece)) {
-    console.log("if you move King is in check");
+  if (kingProjection(pos, board, game, piece, isCheckmate)) {
     return true;
   } else {
     return false;
@@ -97,12 +122,13 @@ const checkKingCheck = (
   game: Game,
   piece: Square,
   availableBoard: boolean[][],
-  board: string[][]
+  board: string[][],
+  isCheckmate: boolean
 ) => {
   for (let y = 0; y < availableBoard.length; y++) {
     for (let x = 0; x < availableBoard[y].length; x++) {
       if (availableBoard[y][x]) {
-        if (isKingInCheck({ y, x }, board, game, piece)) {
+        if (isKingInCheck({ y, x }, board, game, piece, isCheckmate)) {
           availableBoard[y][x] = false;
         }
       }
@@ -114,14 +140,45 @@ const checkKingCheck = (
 const isCheckMate = (board: string[][], game: Game) => {
   const king = game.turn % 2 == 0 ? "K" : "k";
   const pos = getKingPosition(board, king);
+  const avBoard = checkMateAvailableBoard.slice();
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board[y].length; x++) {
+      const piece = getPiece({ y, x }, board);
+      if (piece === "x") continue;
+      if (isEnemyPiece({ y, x }, board, game.isWhite ? "black" : "white")) {
+        if (
+          checkValidMoves(
+            { y, x },
+            piece,
+            avBoard,
+            game.turn % 2 == 1,
+            game,
+            board,
+            true
+          )
+        ) {
+          console.log(piece, "can avoid check");
+          return false;
+        }
+      }
+    }
+  }
+  console.log("can't avoid check");
+  return true;
 };
 
 export const isCheck = (board: string[][], game: Game) => {
   const king = game.turn % 2 == 0 ? "K" : "k";
   const pos = getKingPosition(board, king);
-  console.log("isCheck of ", king);
-  console.log(isCheckBoard(board, { y: pos.y, x: pos.x, piece: king }, game));
-  isCheckMate(board, game);
+
+  if (isCheckBoard(board, { y: pos.y, x: pos.x, piece: king }, game)) {
+    console.log("check");
+    if (isCheckMate(board, game)) {
+      console.log("CHECKMATE");
+    } else {
+      console.log("you can avoid checkmate");
+    }
+  }
 };
 
 export const getEnPassantRow = (enPassant: number[]) => {

@@ -30,3 +30,14 @@ export const startingAvailableBoard = [
   [false, false, false, false, false, false, false, false],
   [false, false, false, false, false, false, false, false],
 ];
+
+export const checkMateAvailableBoard = [
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false],
+];

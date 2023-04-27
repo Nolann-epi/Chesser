@@ -116,10 +116,11 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         pos,
         getPiece(pos, board),
         availableBoard,
-        setAvailableBoard,
         game.turn % 2 == 0,
         game,
-        board
+        board,
+        false,
+        setAvailableBoard
       );
 
       if (hasAvailableMoves(availableBoard)) {
