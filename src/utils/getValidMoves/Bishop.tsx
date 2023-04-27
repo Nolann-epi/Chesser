@@ -1,4 +1,4 @@
-import { MousePos } from "@/interfaces/Chess";
+import { MousePos, Square } from "@/interfaces/Chess";
 import {
   getAllyCollision,
   getEnemyCollision,
@@ -48,4 +48,48 @@ export const getBishopValidMoves = (
   }
 
   return availableBoard;
+};
+
+export const canBishopCheck = (
+  pos: MousePos,
+  verificationBoard: string[][],
+  king: Square
+): boolean => {
+  const x = pos.x;
+  const y = pos.y;
+
+  const directions = [
+    { x: 1, y: 1 },
+    { x: 1, y: -1 },
+    { x: -1, y: 1 },
+    { x: -1, y: -1 },
+  ];
+  for (const dir of directions) {
+    let i = 1;
+    while (
+      !isOutOfBondsMoves({ y: y + i * dir.y, x: x + i * dir.x }) &&
+      !getAllyCollision(
+        king.piece === "k" ? "B" : "b",
+        getPiece({ y: y + i * dir.y, x: x + i * dir.x }, verificationBoard)
+      )
+    ) {
+      if (
+        getPiece({ y: y + i * dir.y, x: x + i * dir.x }, verificationBoard) ===
+        king.piece
+      ) {
+        return true;
+      }
+      if (
+        getEnemyCollision(
+          king.piece === "k" ? "B" : "b",
+          getPiece({ y: y + i * dir.y, x: x + i * dir.x }, verificationBoard)
+        )
+      ) {
+        break;
+      }
+      i++;
+    }
+  }
+
+  return false;
 };

@@ -1,6 +1,6 @@
 import { Square, MousePos, Game } from "../interfaces/Chess";
 
-import { getKingValidMoves } from "./getValidMoves/King";
+import { getKingValidMoves, isCheckBoard } from "./getValidMoves/King";
 import { getQueenValidMoves } from "./getValidMoves/Queen";
 import { getRookValidMoves } from "./getValidMoves/Rook";
 import { getBishopValidMoves } from "./getValidMoves/Bishop";
@@ -32,17 +32,83 @@ export const checkValidMoves = (
     piece.toUpperCase() === "P" ? piece : piece.toUpperCase()
   );
   if (getValidMovesFn) {
+    const array = getValidMovesFn(
+      pos,
+      availableBoard,
+      game.isWhite,
+      isWhiteToPlay,
+      board,
+      game
+    );
+
     setBoard(
-      getValidMovesFn(
-        pos,
-        availableBoard,
-        game.isWhite,
-        isWhiteToPlay,
-        board,
-        game
+      checkKingCheck(
+        game,
+        {
+          x: pos.x,
+          y: pos.y,
+          piece: board[pos.y][pos.x],
+        },
+        array,
+        board
       )
     );
   }
+};
+
+const kingProjection = (
+  pos: MousePos,
+  board: string[][],
+  game: Game,
+  piece: Square
+) => {
+  const isWhiteToPlay = game.turn % 2 == 0;
+  const kingToFind = isWhiteToPlay ? "k" : "K";
+  const kingPos = getKingPosition(board, kingToFind);
+  const verificationBoard = board.map((row) => [...row]);
+  verificationBoard[pos.y][pos.x] = piece.piece;
+  verificationBoard[piece.y][piece.x] = "x";
+  return isCheckBoard(
+    verificationBoard,
+    {
+      x: kingPos.x,
+      y: kingPos.y,
+      piece: kingToFind,
+    },
+    game
+  );
+};
+
+const isKingInCheck = (
+  pos: MousePos,
+  board: string[][],
+  game: Game,
+  piece: Square
+) => {
+  if (kingProjection(pos, board, game, piece)) {
+    console.log("if you move King is in check");
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const checkKingCheck = (
+  game: Game,
+  piece: Square,
+  availableBoard: boolean[][],
+  board: string[][]
+) => {
+  for (let y = 0; y < availableBoard.length; y++) {
+    for (let x = 0; x < availableBoard[y].length; x++) {
+      if (availableBoard[y][x]) {
+        if (isKingInCheck({ y, x }, board, game, piece)) {
+          availableBoard[y][x] = false;
+        }
+      }
+    }
+  }
+  return availableBoard;
 };
 
 export const getEnPassantRow = (enPassant: number[]) => {
@@ -115,4 +181,13 @@ export const resetAvailableBoard = (availableBoard: boolean[][]) => {
     }
   }
   return availableBoard;
+};
+
+export const getKingPosition = (board: string[][], king: string) => {
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board[y].length; x++) {
+      if (board[y][x] === king) return { x, y };
+    }
+  }
+  return { x: -1, y: -1 };
 };

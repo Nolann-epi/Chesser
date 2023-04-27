@@ -8,6 +8,8 @@ export default function Home() {
     isWhite: true,
     turn: 0,
     enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
+    isCheck: false,
+    isCheckMate: false,
   });
   return (
     <Layout game={game}>

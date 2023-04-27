@@ -13,6 +13,8 @@ export interface Game {
   isWhite: boolean;
   turn: number;
   enPassant: number[];
+  isCheck: boolean;
+  isCheckMate: boolean;
 }
 
 export interface PropsFunction {

@@ -11,8 +11,9 @@ import {
   getAvailabilty,
   getPiece,
   hasAvailableMoves,
-  getEnemyCollision,
+  getKingPosition,
 } from "../utils/getFunction";
+import { isCheckBoard } from "@/utils/getValidMoves/King";
 
 interface ChessBoardProps {
   setGame: React.Dispatch<React.SetStateAction<Game>>;
@@ -106,7 +107,7 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
   useEffect(() => {
     if (!switchPosition) return;
     handleSwitchPosition();
-  }, [switchPosition]);
+  }, [switchPosition, selectedPosition]);
 
   const getMousePosition = (e: any, pos: MousePos) => {
     if (selectedPiece.piece === "") {
@@ -119,6 +120,7 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         game,
         board
       );
+
       if (hasAvailableMoves(availableBoard)) {
         setselectedPiece({ x: pos.x, y: pos.y, piece: board[pos.y][pos.x] });
       }

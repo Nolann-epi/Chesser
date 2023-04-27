@@ -1,6 +1,7 @@
-import { Game, MousePos } from "@/interfaces/Chess";
+import { Game, MousePos, Square } from "@/interfaces/Chess";
 import {
   getEnPassantRow,
+  getPiece,
   isEnemyPiece,
   isOutOfBondsMoves,
   isPiece,
@@ -93,4 +94,105 @@ export const getBlackPawnValidMoves = (
     }
   }
   return availableBoard;
+};
+
+export const canBlackPawnCheck = (
+  pos: MousePos,
+  verificationBoard: string[][],
+  king: Square,
+  game: Game
+): boolean => {
+  if (game.isWhite) {
+    if (pos.y === 1) {
+      if (!isPiece({ y: pos.y + 1, x: pos.x }, verificationBoard)) {
+        return false;
+      }
+      if (!isPiece({ y: pos.y + 2, x: pos.x }, verificationBoard)) return false;
+    } else {
+      if (
+        !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x }) &&
+        !isPiece({ y: pos.y + 1, x: pos.x }, verificationBoard)
+      ) {
+        return false;
+      }
+    }
+    if (pos.y === 5) {
+      const row = getEnPassantRow(game.enPassant);
+      if (Math.abs(row - pos.x) === 1) {
+        if (row - pos.x >= 0) {
+          return false;
+        }
+        if (row - pos.x < 0) {
+          return false;
+        }
+      }
+    }
+    if (
+      !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x + 1 }) &&
+      isEnemyPiece({ y: pos.y + 1, x: pos.x + 1 }, verificationBoard, "white")
+    ) {
+      if (
+        getPiece({ y: pos.y + 1, x: pos.x + 1 }, verificationBoard) ===
+        king.piece
+      )
+        return true;
+    }
+    if (
+      !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x - 1 }) &&
+      isEnemyPiece({ y: pos.y + 1, x: pos.x - 1 }, verificationBoard, "white")
+    ) {
+      if (
+        getPiece({ y: pos.y + 1, x: pos.x - 1 }, verificationBoard) ===
+        king.piece
+      )
+        return true;
+    }
+  } else {
+    if (pos.y === 6) {
+      if (!isPiece({ y: pos.y - 1, x: pos.x }, verificationBoard)) {
+        return false;
+      }
+      if (!isPiece({ y: pos.y - 2, x: pos.x }, verificationBoard)) return false;
+    } else {
+      if (
+        !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x }) &&
+        !isPiece({ y: pos.y - 1, x: pos.x }, verificationBoard)
+      ) {
+        return false;
+      }
+    }
+    if (pos.y === 2) {
+      const row = getEnPassantRow(game.enPassant);
+      if (Math.abs(row - pos.x) === 1) {
+        if (row - pos.x >= 0) {
+          return false;
+        }
+        if (row - pos.x < 0) {
+          return false;
+        }
+      }
+    }
+
+    if (
+      !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x + 1 }) &&
+      isEnemyPiece({ y: pos.y - 1, x: pos.x + 1 }, verificationBoard, "white")
+    ) {
+      if (
+        getPiece({ y: pos.y - 1, x: pos.x + 1 }, verificationBoard) ===
+        king.piece
+      )
+        return true;
+    }
+    if (
+      !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x - 1 }) &&
+      isEnemyPiece({ y: pos.y - 1, x: pos.x - 1 }, verificationBoard, "white")
+    ) {
+      if (
+        getPiece({ y: pos.y - 1, x: pos.x - 1 }, verificationBoard) ===
+        king.piece
+      )
+        return true;
+    }
+  }
+  return false;
 };

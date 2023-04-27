@@ -1,4 +1,4 @@
-import { MousePos } from "@/interfaces/Chess";
+import { MousePos, Square } from "@/interfaces/Chess";
 import {
   getAllyCollision,
   getEnemyCollision,
@@ -50,4 +50,33 @@ export const getKnightValidMoves = (
   });
 
   return availableBoard;
+};
+
+export const canKnightCheck = (
+  pos: MousePos,
+  verificationBoard: string[][],
+  king: Square
+): boolean => {
+  const moves: { x: number; y: number }[] = [
+    { x: 1, y: 2 },
+    { x: 2, y: 1 },
+    { x: 2, y: -1 },
+    { x: 1, y: -2 },
+    { x: -1, y: -2 },
+    { x: -2, y: -1 },
+    { x: -2, y: 1 },
+    { x: -1, y: 2 },
+  ];
+  let foundKing = false;
+
+  moves.forEach((move) => {
+    const newY = pos.y + move.y;
+    const newX = pos.x + move.x;
+
+    if (isOutOfBondsMoves({ y: newY, x: newX })) return;
+    if (getPiece({ y: newY, x: newX }, verificationBoard) === king.piece)
+      foundKing = true;
+  });
+  console.log(foundKing);
+  return foundKing;
 };
