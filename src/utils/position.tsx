@@ -1,4 +1,4 @@
-import { Square, MousePos } from "../interfaces/Chess";
+import { Square, MousePos, Game } from "../interfaces/Chess";
 
 import * as getValidMoves from "./getValidMoves";
 
@@ -8,7 +8,7 @@ export const checkValidMoves = (
   availableBoard: boolean[][],
   setBoard: React.Dispatch<React.SetStateAction<boolean[][]>>,
   isWhiteToPlay: boolean,
-  isWhite: boolean,
+  game: Game,
   board: string[][]
 ) => {
   if (isWhiteToPlay && piece === piece.toLocaleUpperCase()) return;
@@ -27,11 +27,24 @@ export const checkValidMoves = (
   );
   if (getValidMovesFn) {
     setBoard(
-      getValidMovesFn(pos, availableBoard, isWhite, isWhiteToPlay, board)
+      getValidMovesFn(
+        pos,
+        availableBoard,
+        game.isWhite,
+        isWhiteToPlay,
+        board,
+        game
+      )
     );
   }
 };
 
+export const getEnPassantRow = (enPassant: number[]) => {
+  for (let i = 0; i < enPassant.length; i++) {
+    if (enPassant[i] === 1) return i;
+  }
+  return -1;
+};
 export const getPiece = (pos: MousePos, board: string[][]) => {
   return board[pos.y][pos.x];
 };

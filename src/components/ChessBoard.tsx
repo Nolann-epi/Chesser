@@ -42,22 +42,65 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
       }
     }
   };
+  const checkEnPassant = (piece: Square, position: Square) => {
+    if (piece.piece.toUpperCase() === "P" && piece.x === position.x) {
+      if (Math.abs(piece.y - position.y) === 2) {
+        const newArray = game.enPassant.slice();
+        newArray[piece.x] = 1;
+        return piece.x;
+      }
+    } else {
+      return -1;
+    }
+  };
+
+  const enPassantDeletePawn = (newBoard: string[][]) => {
+    if (
+      selectedPiece.piece.toUpperCase() === "P" &&
+      selectedPiece.x !== selectedPosition.x
+    ) {
+      if (game.isWhite) {
+        if (selectedPiece.piece === selectedPiece.piece.toUpperCase()) {
+          newBoard[selectedPosition.y - 2][selectedPosition.x] = "x";
+        } else {
+          newBoard[selectedPosition.y + 2][selectedPosition.x] = "x";
+        }
+      } else {
+        if (selectedPiece.piece !== selectedPiece.piece.toUpperCase()) {
+          newBoard[selectedPosition.y - 2][selectedPosition.x] = "x";
+        } else {
+          newBoard[selectedPosition.y + 2][selectedPosition.x] = "x";
+        }
+      }
+    }
+  };
 
   const handleSwitchPosition = () => {
     const newBoard = board.slice();
     if (selectedPosition.piece === "x") {
-      newBoard[selectedPiece.y][selectedPiece.x] = selectedPosition.piece; // remove pawn at (6,3)
-      newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece; // add pawn at (4,3)
+      enPassantDeletePawn(newBoard);
+      newBoard[selectedPiece.y][selectedPiece.x] = selectedPosition.piece;
+      newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece;
     } else {
-      newBoard[selectedPiece.y][selectedPiece.x] = "x"; // remove pawn at (6,3)
-      newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece; // add pawn at (4,3)
+      newBoard[selectedPiece.y][selectedPiece.x] = "x";
+      newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece;
     }
     setBoard(newBoard);
     setSelectedPosition({ x: 0, y: 0, piece: "" });
     setselectedPiece({ x: 0, y: 0, piece: "" });
     setSwitchPosition(false);
     resetAvailableBoard();
-    setGame({ ...game, turn: game.turn + 1 });
+    const enPassant = checkEnPassant(selectedPiece, selectedPosition);
+    if (enPassant !== -1) {
+      const newArray = game.enPassant.map((_, i) => (i === enPassant ? 1 : 0));
+      setGame({ ...game, turn: game.turn + 1, enPassant: newArray });
+    } else {
+      setGame({
+        ...game,
+        turn: game.turn + 1,
+        enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
+      });
+    }
   };
 
   useEffect(() => {
@@ -73,7 +116,7 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         availableBoard,
         setAvailableBoard,
         game.turn % 2 == 0,
-        game.isWhite,
+        game,
         board
       );
       if (hasAvailableMoves(availableBoard)) {

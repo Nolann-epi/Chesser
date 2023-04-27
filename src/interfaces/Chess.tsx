@@ -12,6 +12,7 @@ export interface Square {
 export interface Game {
   isWhite: boolean;
   turn: number;
+  enPassant: number[];
 }
 
 export interface PropsFunction {
