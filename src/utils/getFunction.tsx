@@ -1,6 +1,12 @@
 import { Square, MousePos, Game } from "../interfaces/Chess";
 
-import * as getValidMoves from "./getValidMoves";
+import { getKingValidMoves } from "./getValidMoves/King";
+import { getQueenValidMoves } from "./getValidMoves/Queen";
+import { getRookValidMoves } from "./getValidMoves/Rook";
+import { getBishopValidMoves } from "./getValidMoves/Bishop";
+import { getKnightValidMoves } from "./getValidMoves/Knight";
+import { getBlackPawnValidMoves } from "./getValidMoves/BlackPawn";
+import { getWhitePawnValidMoves } from "./getValidMoves/WhitePawn";
 
 export const checkValidMoves = (
   pos: MousePos,
@@ -14,13 +20,13 @@ export const checkValidMoves = (
   if (isWhiteToPlay && piece === piece.toLocaleUpperCase()) return;
   if (!isWhiteToPlay && piece !== piece.toLocaleUpperCase()) return;
   const getMoves = new Map([
-    ["K", getValidMoves.getKingValidMoves],
-    ["Q", getValidMoves.getQueenValidMoves],
-    ["R", getValidMoves.getRookValidMoves],
-    ["B", getValidMoves.getBishopValidMoves],
-    ["N", getValidMoves.getKnightValidMoves],
-    ["P", getValidMoves.getBlackPawnValidMoves],
-    ["p", getValidMoves.getWhitePawnValidMoves],
+    ["K", getKingValidMoves],
+    ["Q", getQueenValidMoves],
+    ["R", getRookValidMoves],
+    ["B", getBishopValidMoves],
+    ["N", getKnightValidMoves],
+    ["P", getBlackPawnValidMoves],
+    ["p", getWhitePawnValidMoves],
   ]);
   const getValidMovesFn = getMoves.get(
     piece.toUpperCase() === "P" ? piece : piece.toUpperCase()

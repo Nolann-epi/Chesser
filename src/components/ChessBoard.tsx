@@ -12,7 +12,7 @@ import {
   getPiece,
   hasAvailableMoves,
   getEnemyCollision,
-} from "../utils/position";
+} from "../utils/getFunction";
 
 interface ChessBoardProps {
   setGame: React.Dispatch<React.SetStateAction<Game>>;
