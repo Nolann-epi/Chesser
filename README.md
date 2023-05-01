@@ -1,38 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Chess Game
 
-## Getting Started
+This is a simple chess game built with Next.js. The game allows two players to play against each other on the same computer. No chess library were used.
 
-First, run the development server:
+# How to play
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+Go to 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The game is played by two players taking turns to move their pieces on the chessboard. The game follows standard chess rules, including en passant and castling.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+To move a piece, click on the piece you want to move and then click on the destination square. If a move is not valid, the game will prompt you to enter a valid move.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+# Advancement Table
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+ - [x] Implementation of the empty chess board
+ - [x] Implementation of the pieces on the board
+ - [x] Movement of every pieces on the board
+ - [x] Movement on only valid squares only
+ - [x] Movement only on squares that doesn't check your king
+ - [x] Detection of check
+ - [x] Detection of checkmate
+ - [x] Castling
+ - [x] Detection of stalemate
+ 
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# Future Improvements
 
-## Learn More
+  - [ ]  Add acounts to prepare for multiplayer
+  - [ ]  Add multiplayer lobbies
+  - [ ]  Implement an AI player for single-player mode
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Credits
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project was created by Nolann Holvoet
