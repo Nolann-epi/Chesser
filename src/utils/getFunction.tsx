@@ -74,7 +74,6 @@ export const checkValidMoves = (
         board,
         true
       );
-      console.log(newArray);
       return hasAvailableMoves(newArray);
     }
   }
@@ -138,14 +137,14 @@ const checkKingCheck = (
 };
 
 const isCheckMate = (board: string[][], game: Game) => {
-  const king = game.turn % 2 == 0 ? "K" : "k";
-  const pos = getKingPosition(board, king);
   const avBoard = checkMateAvailableBoard.slice();
   for (let y = 0; y < board.length; y++) {
     for (let x = 0; x < board[y].length; x++) {
       const piece = getPiece({ y, x }, board);
       if (piece === "x") continue;
-      if (isEnemyPiece({ y, x }, board, game.isWhite ? "black" : "white")) {
+      if (
+        isEnemyPiece({ y, x }, board, game.turn % 2 == 0 ? "black" : "white")
+      ) {
         if (
           checkValidMoves(
             { y, x },
@@ -157,7 +156,7 @@ const isCheckMate = (board: string[][], game: Game) => {
             true
           )
         ) {
-          console.log(piece, "can avoid check");
+          console.log(piece, "can avoid checkmate");
           return false;
         }
       }
@@ -167,7 +166,12 @@ const isCheckMate = (board: string[][], game: Game) => {
   return true;
 };
 
-export const isCheck = (board: string[][], game: Game) => {
+export const isCheck = (
+  board: string[][],
+  game: Game,
+  setGame: React.Dispatch<React.SetStateAction<Game>>,
+  setIsOver: React.Dispatch<React.SetStateAction<Boolean>>
+) => {
   const king = game.turn % 2 == 0 ? "K" : "k";
   const pos = getKingPosition(board, king);
 
@@ -175,10 +179,15 @@ export const isCheck = (board: string[][], game: Game) => {
     console.log("check");
     if (isCheckMate(board, game)) {
       console.log("CHECKMATE");
+      setIsOver(true);
     } else {
+      setGame((prev) => ({ ...prev, isCheck: true }));
       console.log("you can avoid checkmate");
     }
+  } else {
+    setGame((prev) => ({ ...prev, isCheck: false }));
   }
+  console.log(game);
 };
 
 export const getEnPassantRow = (enPassant: number[]) => {

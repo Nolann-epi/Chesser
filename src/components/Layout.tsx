@@ -5,7 +5,8 @@ interface LayoutProps {
   game: Game;
 }
 
-export default function Layout({ children, game }: any) {
+export default function Layout({ children, game }: LayoutProps) {
+  console.log(game);
   return (
     <div className="w-screen h-screen flex bg-gray-800 justify-around items-center flex-row gap-5">
       <div className="text-white text-xl flex flex-col text-center w-1/3">
@@ -15,14 +16,10 @@ export default function Layout({ children, game }: any) {
         ) : (
           <div>Black to play</div>
         )}
-        <div className="flex flex-row gap-3">
-          <p>En passant Array</p>
-          {game.enPassant.map((enPassant: number[], index: number) => (
-            <div key={index}>{enPassant}</div>
-          ))}
-        </div>
+        {game.isCheck ? <div>Check ! </div> : <div></div>}
+        {game.isCheckMate ? <div>Checkmate !</div> : <div></div>}
       </div>
-      <div className="w-[800px] h-[800px] bg-red-400">{children}</div>
+      <div className="w-[800px] h-[800px]">{children}</div>
     </div>
   );
 }

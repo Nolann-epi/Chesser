@@ -21,9 +21,13 @@ interface ChessBoardProps {
 }
 const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
   const [board, setBoard] = useState(
-    game.isWhite ? startingBoardWhite : startingBoardBlack
+    game.isWhite
+      ? JSON.parse(JSON.stringify(startingBoardWhite))
+      : JSON.parse(JSON.stringify(startingBoardBlack))
   );
-  const [availableBoard, setAvailableBoard] = useState(startingAvailableBoard);
+  const [availableBoard, setAvailableBoard] = useState(
+    startingAvailableBoard.slice()
+  );
   const [selectedPiece, setselectedPiece] = useState<Square>({
     x: 0,
     y: 0,
@@ -35,6 +39,8 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
     piece: "",
   });
   const [switchPosition, setSwitchPosition] = useState<Boolean>(false);
+  const [isOver, setIsOver] = useState<Boolean>(false);
+  const [hasStarted, setHasStarted] = useState<Boolean>(false);
 
   const resetAvailableBoard = () => {
     for (let y = 0; y < availableBoard.length; y++) {
@@ -102,13 +108,13 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
       });
     }
-    isCheck(board, game);
+    isCheck(board, game, setGame, setIsOver);
   };
 
   useEffect(() => {
     if (!switchPosition) return;
     handleSwitchPosition();
-  }, [switchPosition, selectedPosition]);
+  }, [switchPosition, selectedPosition, game]);
 
   const getMousePosition = (e: any, pos: MousePos) => {
     if (selectedPiece.piece === "") {
@@ -138,29 +144,124 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
     }
   };
 
+  const replayGame = () => {
+    if (game.isWhite) {
+      setGame({
+        isWhite: false,
+        turn: 0,
+        enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
+        isCheck: false,
+        isCheckMate: false,
+      });
+      setBoard(JSON.parse(JSON.stringify(startingBoardBlack)));
+    } else {
+      setGame({
+        isWhite: true,
+        turn: 0,
+        enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
+        isCheck: false,
+        isCheckMate: false,
+      });
+      setBoard(JSON.parse(JSON.stringify(startingBoardWhite)));
+    }
+    setAvailableBoard(startingAvailableBoard.slice());
+    setselectedPiece({ x: 0, y: 0, piece: "" });
+    setSelectedPosition({ x: 0, y: 0, piece: "" });
+    setSwitchPosition(false);
+    setIsOver(false);
+  };
+
+  const startGame = (color: string) => {
+    const isWhite = color === "white" ? true : false;
+    setGame({
+      isWhite: isWhite,
+      turn: 0,
+      enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
+      isCheck: false,
+      isCheckMate: false,
+    });
+    if (isWhite) {
+      setBoard(JSON.parse(JSON.stringify(startingBoardWhite)));
+    } else {
+      setBoard(JSON.parse(JSON.stringify(startingBoardBlack)));
+    }
+    setAvailableBoard(startingAvailableBoard.slice());
+    setselectedPiece({ x: 0, y: 0, piece: "" });
+    setSelectedPosition({ x: 0, y: 0, piece: "" });
+    setSwitchPosition(false);
+    setIsOver(false);
+    setHasStarted(true);
+  };
+
   return (
     <div>
-      {board.map((row, rowIndex) => (
-        <div key={rowIndex + 1} className="w-full h-[100px] flex flex-row">
-          {row.map((col, colIndex) => (
-            <div
-              key={(colIndex + 1) * (rowIndex + 1)}
-              onClick={(e) => getMousePosition(e, { x: colIndex, y: rowIndex })}
-              className={`w-[100px] h-full flex justify-center items-center ${
-                (rowIndex + colIndex) % 2 === 0
-                  ? "bg-[#fff8ed]"
-                  : "bg-[#be760a]"
-              }`}
-            >
-              <ChessPiece
-                letter={col}
-                isAvailable={availableBoard[rowIndex][colIndex]}
-                turn={game.turn}
-              />
+      {hasStarted &&
+        board.map((row: any, rowIndex: any) => (
+          <div
+            key={rowIndex + 1}
+            className={`w-full h-[100px] flex flex-row ${
+              isOver ? "opacity-50" : "opacity-100"
+            }`}
+          >
+            {row.map((col: any, colIndex: any) => (
+              <div
+                key={(colIndex + 1) * (rowIndex + 1)}
+                onClick={(e) =>
+                  getMousePosition(e, { x: colIndex, y: rowIndex })
+                }
+                className={`w-[100px] h-full flex justify-center items-center ${
+                  (rowIndex + colIndex) % 2 === 0
+                    ? "bg-[#fff8ed]"
+                    : "bg-[#be760a]"
+                }`}
+              >
+                <ChessPiece
+                  letter={col}
+                  isAvailable={availableBoard[rowIndex][colIndex]}
+                  turn={game.turn}
+                />
+              </div>
+            ))}
+          </div>
+        ))}
+      {isOver && (
+        <div className="w-[500px] h-[400px] absolute z-10 top-[250px] right-[250px] bg-red-500/70 p-4 rounded-xl">
+          <div className="flex flex-col justify-center items-center text-white text-4xl gap-3">
+            <p> {game.turn % 2 == 0 ? "Black" : "White"} Wins </p>
+            <p className="mt-10">Play again ?</p>
+            <div className="flex flex-row mt-20 justify-around w-full">
+              <button
+                onClick={replayGame}
+                className="bg-red-100 p-2 rounded-lg"
+              >
+                Oui
+              </button>
+              <button className="bg-red-100 p-2 rounded-lg">Non</button>
             </div>
-          ))}
+          </div>
         </div>
-      ))}
+      )}
+      {!hasStarted && (
+        <div className="w-[500px] h-[400px] absolute z-10 top-[250px] right-[250px] bg-red-500/70 p-4 rounded-xl">
+          <div className="flex flex-col justify-center items-center text-white text-4xl gap-3">
+            <p> Choose a side</p>
+            <div className="flex flex-row mt-20 justify-around w-full">
+              <button
+                onClick={() => startGame("white")}
+                className="bg-red-100 p-2 rounded-lg"
+              >
+                Play as White
+              </button>
+              <button
+                className="bg-red-100 p-2 rounded-lg"
+                onClick={() => startGame("black")}
+              >
+                Play as Black
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

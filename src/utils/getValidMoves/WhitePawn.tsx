@@ -148,6 +148,7 @@ export const canWhitePawnCheck = (
         return true;
     }
   } else {
+    console.log("please");
     if (pos.y === 1) {
       if (!isPiece({ y: pos.y + 1, x: pos.x }, verificationBoard)) {
         return false;
@@ -172,12 +173,17 @@ export const canWhitePawnCheck = (
         }
       }
     }
+    console.log(
+      getPiece({ y: pos.y + 1, x: pos.x + 1 }, verificationBoard),
+      "king?",
+      king.piece
+    );
     if (
       !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x + 1 }) &&
       isEnemyPiece({ y: pos.y + 1, x: pos.x + 1 }, verificationBoard, "black")
     ) {
       if (
-        getPiece({ y: pos.y - 1, x: pos.x - 1 }, verificationBoard) ===
+        getPiece({ y: pos.y + 1, x: pos.x + 1 }, verificationBoard) ===
         king.piece
       )
         return true;
@@ -187,7 +193,7 @@ export const canWhitePawnCheck = (
       isEnemyPiece({ y: pos.y + 1, x: pos.x - 1 }, verificationBoard, "black")
     ) {
       if (
-        getPiece({ y: pos.y - 1, x: pos.x - 1 }, verificationBoard) ===
+        getPiece({ y: pos.y + 1, x: pos.x + 1 }, verificationBoard) ===
         king.piece
       )
         return true;
