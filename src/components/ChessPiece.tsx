@@ -9,12 +9,11 @@ interface ChessPieceProps {
 const ChessPiece = ({ letter, isAvailable, turn }: ChessPieceProps) => {
   const isPiece = letter !== "x";
   const color = letter === letter.toUpperCase() ? "B" : "W";
-  const url = `url("../assets/chess/${letter.toUpperCase()}${color}.png")`;
-  const bgUrl = `bg-[${url}]`;
-  console.log(bgUrl);
+  const url = `url(/chess/${letter.toUpperCase()}${color}.png)`;
   return (
     <div
-      className={`w-full h-full ${bgUrl} bg-center bg-no-repeat bg-contain flex justify-center items-center`}
+      style={{ backgroundImage: url }}
+      className={`w-full h-full  bg-center bg-no-repeat bg-contain flex justify-center items-center`}
     >
       {isAvailable && !isPiece && (
         <div
