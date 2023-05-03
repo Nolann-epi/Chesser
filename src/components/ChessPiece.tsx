@@ -7,53 +7,14 @@ interface ChessPieceProps {
 }
 
 const ChessPiece = ({ letter, isAvailable, turn }: ChessPieceProps) => {
-  let path;
   const isPiece = letter !== "x";
-  switch (letter) {
-    case "R":
-      path = `bg-[url("../assets/chess/RB.png")]`;
-      break;
-    case "N":
-      path = `bg-[url("../assets/chess/NB.png")]`;
-      break;
-    case "B":
-      path = `bg-[url("../assets/chess/BB.png")]`;
-      break;
-    case "K":
-      path = `bg-[url("../assets/chess/KB.png")]`;
-      break;
-    case "Q":
-      path = `bg-[url("../assets/chess/QB.png")]`;
-      break;
-    case "P":
-      path = `bg-[url("../assets/chess/PB.png")]`;
-      break;
-    case "r":
-      path = `bg-[url("../assets/chess/RW.png")]`;
-      break;
-    case "n":
-      path = `bg-[url("../assets/chess/NW.png")]`;
-      break;
-    case "b":
-      path = `bg-[url("../assets/chess/BW.png")]`;
-      break;
-    case "k":
-      path = `bg-[url("../assets/chess/KW.png")]`;
-      break;
-    case "q":
-      path = `bg-[url("../assets/chess/QW.png")]`;
-      break;
-    case "p":
-      path = `bg-[url("../assets/chess/PW.png")]`;
-      break;
-    default:
-      path = "";
-      break;
-  }
-
+  const color = letter === letter.toUpperCase() ? "B" : "W";
+  const url = `url("../assets/chess/${letter.toUpperCase()}${color}.png")`;
+  const bgUrl = `bg-[${url}]`;
+  console.log(bgUrl);
   return (
     <div
-      className={`w-full h-full ${path} bg-center bg-no-repeat bg-contain flex justify-center items-center`}
+      className={`w-full h-full ${bgUrl} bg-center bg-no-repeat bg-contain flex justify-center items-center`}
     >
       {isAvailable && !isPiece && (
         <div

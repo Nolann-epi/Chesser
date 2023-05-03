@@ -14,6 +14,11 @@ import {
   getKingPosition,
   isCheck,
 } from "../utils/getFunction";
+import { AiFillCheckCircle } from "react-icons/ai";
+import { MdCancel } from "react-icons/md";
+import StartingMenu from "./StartingMenu";
+import EndGameModal from "./EndGameModal";
+import PlayerScore from "./PlayerScore";
 
 interface ChessBoardProps {
   setGame: React.Dispatch<React.SetStateAction<Game>>;
@@ -38,9 +43,9 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
     y: 0,
     piece: "",
   });
-  const [switchPosition, setSwitchPosition] = useState<Boolean>(false);
-  const [isOver, setIsOver] = useState<Boolean>(false);
-  const [hasStarted, setHasStarted] = useState<Boolean>(false);
+  const [switchPosition, setSwitchPosition] = useState<boolean>(false);
+  const [isOver, setIsOver] = useState<boolean>(false);
+  const [hasStarted, setHasStarted] = useState<boolean>(false);
 
   const resetAvailableBoard = () => {
     for (let y = 0; y < availableBoard.length; y++) {
@@ -171,6 +176,21 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
     setIsOver(false);
   };
 
+  const stopGame = () => {
+    setGame({
+      isWhite: false,
+      turn: 0,
+      enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
+      isCheck: false,
+      isCheckMate: false,
+    });
+    setAvailableBoard(startingAvailableBoard.slice());
+    setselectedPiece({ x: 0, y: 0, piece: "" });
+    setSelectedPosition({ x: 0, y: 0, piece: "" });
+    setSwitchPosition(false);
+    setHasStarted(false);
+  };
+
   const startGame = (color: string) => {
     const isWhite = color === "white" ? true : false;
     setGame({
@@ -194,7 +214,8 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
   };
 
   return (
-    <div>
+    <div className="">
+      {hasStarted && <PlayerScore isWhite={game.isWhite} name={"Opponent"} />}
       {hasStarted &&
         board.map((row: any, rowIndex: any) => (
           <div
@@ -224,44 +245,15 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
             ))}
           </div>
         ))}
+      {hasStarted && <PlayerScore isWhite={!game.isWhite} name={"Me"} />}
       {isOver && (
-        <div className="w-[500px] h-[400px] absolute z-10 top-[250px] right-[250px] bg-red-500/70 p-4 rounded-xl">
-          <div className="flex flex-col justify-center items-center text-white text-4xl gap-3">
-            <p> {game.turn % 2 == 0 ? "Black" : "White"} Wins </p>
-            <p className="mt-10">Play again ?</p>
-            <div className="flex flex-row mt-20 justify-around w-full">
-              <button
-                onClick={replayGame}
-                className="bg-red-100 p-2 rounded-lg"
-              >
-                Oui
-              </button>
-              <button className="bg-red-100 p-2 rounded-lg">Non</button>
-            </div>
-          </div>
-        </div>
+        <EndGameModal
+          turn={game.turn % 2}
+          replayGame={replayGame}
+          stopGame={stopGame}
+        />
       )}
-      {!hasStarted && (
-        <div className="w-[500px] h-[400px] absolute z-10 top-[250px] right-[250px] bg-red-500/70 p-4 rounded-xl">
-          <div className="flex flex-col justify-center items-center text-white text-4xl gap-3">
-            <p> Choose a side</p>
-            <div className="flex flex-row mt-20 justify-around w-full">
-              <button
-                onClick={() => startGame("white")}
-                className="bg-red-100 p-2 rounded-lg"
-              >
-                Play as White
-              </button>
-              <button
-                className="bg-red-100 p-2 rounded-lg"
-                onClick={() => startGame("black")}
-              >
-                Play as Black
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <StartingMenu hasStarted={hasStarted} startGame={startGame} />
     </div>
   );
 };

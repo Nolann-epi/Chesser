@@ -6,20 +6,19 @@ interface LayoutProps {
 }
 
 export default function Layout({ children, game }: LayoutProps) {
-  console.log(game);
   return (
-    <div className="w-screen h-screen flex bg-gray-800 justify-around items-center flex-row gap-5">
-      <div className="text-white text-xl flex flex-col text-center w-1/3">
-        <div>Tour {game.turn}</div>
+    <div className="w-screen h-screen flex bg-gray-600 justify-around flex-row gap-5 items-center">
+      <div className="text-white text-xl flex flex-col items-center  w-1/3 h-[300px] justify-between">
+        <div className="text-7xl">Chesser</div>
+        <div className="text-2xl">Tour {game.turn}</div>
         {game.turn % 2 == 0 ? (
-          <div>White to play</div>
+          <div className="text-2xl">White to play</div>
         ) : (
-          <div>Black to play</div>
+          <div className="text-2xl"> Black to play</div>
         )}
-        {game.isCheck ? <div>Check ! </div> : <div></div>}
-        {game.isCheckMate ? <div>Checkmate !</div> : <div></div>}
+        {game.isCheck ? <div className="text-2xl">Check ! </div> : <div></div>}
       </div>
-      <div className="w-[800px] h-[800px]">{children}</div>
+      <div className="w-[800px] h-full">{children}</div>
     </div>
   );
 }

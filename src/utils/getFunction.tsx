@@ -170,7 +170,7 @@ export const isCheck = (
   board: string[][],
   game: Game,
   setGame: React.Dispatch<React.SetStateAction<Game>>,
-  setIsOver: React.Dispatch<React.SetStateAction<Boolean>>
+  setIsOver: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const king = game.turn % 2 == 0 ? "K" : "k";
   const pos = getKingPosition(board, king);
