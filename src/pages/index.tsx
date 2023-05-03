@@ -10,6 +10,18 @@ export default function Home() {
     enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
     isCheck: false,
     isCheckMate: false,
+    playerBlack: {
+      hasMovedGrandRook: false,
+      hasMovedKing: false,
+      hasMovedPetitRook: false,
+      score: 0,
+    },
+    playerWhite: {
+      hasMovedGrandRook: false,
+      hasMovedKing: false,
+      hasMovedPetitRook: false,
+      score: 0,
+    },
   });
   return (
     <Layout game={game}>

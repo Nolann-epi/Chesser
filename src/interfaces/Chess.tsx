@@ -9,12 +9,21 @@ export interface Square {
   piece: string;
 }
 
+export interface Player {
+  score: number;
+  hasMovedKing: boolean;
+  hasMovedGrandRook: boolean;
+  hasMovedPetitRook: boolean;
+}
+
 export interface Game {
   isWhite: boolean;
   turn: number;
   enPassant: number[];
   isCheck: boolean;
   isCheckMate: boolean;
+  playerWhite: Player;
+  playerBlack: Player;
 }
 
 export interface PropsFunction {

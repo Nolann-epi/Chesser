@@ -79,7 +79,7 @@ export const checkValidMoves = (
   }
 };
 
-const kingProjection = (
+export const kingProjection = (
   pos: MousePos,
   board: string[][],
   game: Game,

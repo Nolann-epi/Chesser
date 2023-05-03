@@ -90,6 +90,13 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
 
   const handleSwitchPosition = () => {
     const newBoard = board.slice();
+    //castling
+    // if (
+    //   selectedPiece.piece.toUpperCase() === "K" &&
+    //   Math.abs(selectedPiece.x - selectedPosition.x) === 2
+    // ) {
+    //   if (selectedPosition.x === 6) {
+
     if (selectedPosition.piece === "x") {
       enPassantDeletePawn(newBoard);
       newBoard[selectedPiece.y][selectedPiece.x] = selectedPosition.piece;
@@ -158,6 +165,18 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
         isCheck: false,
         isCheckMate: false,
+        playerBlack: {
+          hasMovedGrandRook: false,
+          hasMovedPetitRook: false,
+          hasMovedKing: false,
+          score: 0,
+        },
+        playerWhite: {
+          hasMovedGrandRook: false,
+          hasMovedPetitRook: false,
+          hasMovedKing: false,
+          score: 0,
+        },
       });
       setBoard(JSON.parse(JSON.stringify(startingBoardBlack)));
     } else {
@@ -167,6 +186,18 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
         isCheck: false,
         isCheckMate: false,
+        playerBlack: {
+          hasMovedGrandRook: false,
+          hasMovedPetitRook: false,
+          hasMovedKing: false,
+          score: 0,
+        },
+        playerWhite: {
+          hasMovedGrandRook: false,
+          hasMovedPetitRook: false,
+          hasMovedKing: false,
+          score: 0,
+        },
       });
       setBoard(JSON.parse(JSON.stringify(startingBoardWhite)));
     }
@@ -184,6 +215,18 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
       enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
       isCheck: false,
       isCheckMate: false,
+      playerBlack: {
+        hasMovedGrandRook: false,
+        hasMovedPetitRook: false,
+        hasMovedKing: false,
+        score: 0,
+      },
+      playerWhite: {
+        hasMovedGrandRook: false,
+        hasMovedPetitRook: false,
+        hasMovedKing: false,
+        score: 0,
+      },
     });
     setAvailableBoard(startingAvailableBoard.slice());
     setselectedPiece({ x: 0, y: 0, piece: "" });
@@ -200,6 +243,18 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
       enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
       isCheck: false,
       isCheckMate: false,
+      playerBlack: {
+        hasMovedGrandRook: false,
+        hasMovedPetitRook: false,
+        hasMovedKing: false,
+        score: 0,
+      },
+      playerWhite: {
+        hasMovedGrandRook: false,
+        hasMovedPetitRook: false,
+        hasMovedKing: false,
+        score: 0,
+      },
     });
     if (isWhite) {
       setBoard(JSON.parse(JSON.stringify(startingBoardWhite)));
