@@ -46,6 +46,7 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
   const [switchPosition, setSwitchPosition] = useState<boolean>(false);
   const [isOver, setIsOver] = useState<boolean>(false);
   const [hasStarted, setHasStarted] = useState<boolean>(false);
+  const [isDraw, setIsDraw] = useState<boolean>(false);
 
   const resetAvailableBoard = () => {
     for (let y = 0; y < availableBoard.length; y++) {
@@ -113,7 +114,7 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
       });
     }
-    isCheck(board, game, setGame, setIsOver);
+    isCheck(board, game, setGame, setIsOver, setIsDraw);
   };
 
   useEffect(() => {
@@ -215,7 +216,9 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
 
   return (
     <div className="">
-      {hasStarted && <PlayerScore isWhite={game.isWhite} name={"Opponent"} />}
+      {hasStarted && (
+        <PlayerScore isWhite={game.isWhite} name={"Opponent"} board={board} />
+      )}
       {hasStarted &&
         board.map((row: any, rowIndex: any) => (
           <div
@@ -245,12 +248,15 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
             ))}
           </div>
         ))}
-      {hasStarted && <PlayerScore isWhite={!game.isWhite} name={"Me"} />}
+      {hasStarted && (
+        <PlayerScore isWhite={!game.isWhite} name={"Me"} board={board} />
+      )}
       {isOver && (
         <EndGameModal
           turn={game.turn % 2}
           replayGame={replayGame}
           stopGame={stopGame}
+          isDraw={isDraw}
         />
       )}
       <StartingMenu hasStarted={hasStarted} startGame={startGame} />

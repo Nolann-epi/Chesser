@@ -6,14 +6,24 @@ interface EndGameModalProps {
   turn: number;
   replayGame: () => void;
   stopGame: () => void;
+  isDraw: boolean;
 }
 
-const EndGameModal = ({ replayGame, stopGame, turn }: EndGameModalProps) => {
+const EndGameModal = ({
+  replayGame,
+  stopGame,
+  turn,
+  isDraw,
+}: EndGameModalProps) => {
   return (
     <>
       <div className="w-[500px] h-[300px] absolute z-10 top-[250px] right-[250px] bg-gray-500/70 p-4 rounded-xl">
         <div className="flex flex-col justify-center items-center text-white text-4xl gap-3">
-          <p> {turn == 0 ? "Black" : "White"} Wins </p>
+          {isDraw ? (
+            <p> Draw </p>
+          ) : (
+            <p> {turn == 0 ? "Black" : "White"} win ! </p>
+          )}
           <p className="mt-10">Play again ?</p>
           <div className="flex flex-row mt-12 justify-around w-full">
             <button onClick={replayGame} className=" p-2 rounded-lg w-20 h-20">

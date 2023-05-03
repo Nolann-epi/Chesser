@@ -170,7 +170,8 @@ export const isCheck = (
   board: string[][],
   game: Game,
   setGame: React.Dispatch<React.SetStateAction<Game>>,
-  setIsOver: React.Dispatch<React.SetStateAction<boolean>>
+  setIsOver: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsDraw: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const king = game.turn % 2 == 0 ? "K" : "k";
   const pos = getKingPosition(board, king);
@@ -185,8 +186,12 @@ export const isCheck = (
       console.log("you can avoid checkmate");
     }
   } else {
-    if (isCheckMate(board, game)) console.log("STALEMATE");
-    setGame((prev) => ({ ...prev, isCheck: false }));
+    if (isCheckMate(board, game)) {
+      setIsDraw(true);
+      setIsOver(true);
+    } else {
+      setGame((prev) => ({ ...prev, isCheck: false }));
+    }
   }
   console.log(game);
 };
