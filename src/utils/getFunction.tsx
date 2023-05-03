@@ -185,6 +185,7 @@ export const isCheck = (
       console.log("you can avoid checkmate");
     }
   } else {
+    if (isCheckMate(board, game)) console.log("STALEMATE");
     setGame((prev) => ({ ...prev, isCheck: false }));
   }
   console.log(game);

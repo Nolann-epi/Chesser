@@ -33,12 +33,12 @@ const PlayerScore = ({ isWhite, name }: PlayerScoreProps) => {
         <span className="text-white text-xl w-28">{name}</span>
 
         {array.map((value, index) => {
-          const url = `url("../assets/chess/${value}${color}.png")`;
-          const bgUrl = `bg-[${url}]`;
+          const url = `url(/chess/${value}${color}.png`;
           return (
             <div
               key={index}
-              className={` bg-blue-500 ${bgUrl} w-8 h-8 bg-no-repeat bg-center bg-cover`}
+              style={{ backgroundImage: url }}
+              className={` bg-blue-500 w-8 h-8 bg-no-repeat bg-center bg-cover`}
             />
           );
         })}
