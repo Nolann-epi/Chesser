@@ -109,34 +109,6 @@ export const canBlackPawnCheck = (
   game: Game
 ): boolean => {
   if (game.isWhite) {
-    if (pos.y === 1) {
-      if (!isPiece({ y: pos.y + 1, x: pos.x }, verificationBoard)) {
-        return false;
-      }
-      if (
-        !isPiece({ y: pos.y + 1, x: pos.x }, verificationBoard) &&
-        !isPiece({ y: pos.y + 2, x: pos.x }, verificationBoard)
-      )
-        return false;
-    } else {
-      if (
-        !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x }) &&
-        !isPiece({ y: pos.y + 1, x: pos.x }, verificationBoard)
-      ) {
-        return false;
-      }
-    }
-    if (pos.y === 5) {
-      const row = getEnPassantRow(game.enPassant);
-      if (Math.abs(row - pos.x) === 1) {
-        if (row - pos.x >= 0) {
-          return false;
-        }
-        if (row - pos.x < 0) {
-          return false;
-        }
-      }
-    }
     if (
       !isOutOfBondsMoves({ y: pos.y + 1, x: pos.x + 1 }) &&
       isEnemyPiece({ y: pos.y + 1, x: pos.x + 1 }, verificationBoard, "white")
@@ -158,35 +130,6 @@ export const canBlackPawnCheck = (
         return true;
     }
   } else {
-    if (pos.y === 6) {
-      if (!isPiece({ y: pos.y - 1, x: pos.x }, verificationBoard)) {
-        return false;
-      }
-      if (
-        !isPiece({ y: pos.y - 1, x: pos.x }, verificationBoard) &&
-        !isPiece({ y: pos.y - 2, x: pos.x }, verificationBoard)
-      )
-        return false;
-    } else {
-      if (
-        !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x }) &&
-        !isPiece({ y: pos.y - 1, x: pos.x }, verificationBoard)
-      ) {
-        return false;
-      }
-    }
-    if (pos.y === 2) {
-      const row = getEnPassantRow(game.enPassant);
-      if (Math.abs(row - pos.x) === 1) {
-        if (row - pos.x >= 0) {
-          return false;
-        }
-        if (row - pos.x < 0) {
-          return false;
-        }
-      }
-    }
-
     if (
       !isOutOfBondsMoves({ y: pos.y - 1, x: pos.x + 1 }) &&
       isEnemyPiece({ y: pos.y - 1, x: pos.x + 1 }, verificationBoard, "white")

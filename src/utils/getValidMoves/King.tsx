@@ -81,7 +81,6 @@ export const isCheckBoard = (board: string[][], king: Square, game: Game) => {
       }
 
       if (getPiece({ y, x }, board) === "p" && king.piece === "K") {
-        console.log("HERE");
         if (canWhitePawnCheck({ y, x }, board, king, game)) {
           //console.log("Pawn in ", { y, x }, " can check the king");
           return true;
