@@ -1,14 +1,24 @@
-## Chess Game
+## Chesser
+
+![main_chesser](https://user-images.githubusercontent.com/62303354/236130046-c91abc26-9372-4ec8-a879-9b662865fb74.png)
 
 This is a chess game built with Next.js and javascript. The game allows two players to play against each other on the same computer. No chess library were used.
 
 # How to play
 
-Go to 
+Go to https://chesser-kappa.vercel.app/
 
 The game is played by two players taking turns to move their pieces on the chessboard. The game follows standard chess rules, including en passant, castling and stalemate.
 
 To move a piece, click on the piece you want to move and then click on the destination square. If a move is not valid, it won't be possible to move.
+
+# Chesser Menu
+
+![menu_chesser](https://user-images.githubusercontent.com/62303354/236130105-3e8abe07-b27c-4ad4-8e81-9a737adf4fc7.png)
+
+# Chesser Win
+
+![win_chesser](https://user-images.githubusercontent.com/62303354/236130145-0b25525e-0411-4366-8992-8dfde4796e9a.png)
 
 # Advancement Table
 
