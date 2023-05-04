@@ -11,11 +11,8 @@ import {
   getAvailabilty,
   getPiece,
   hasAvailableMoves,
-  getKingPosition,
   isCheck,
 } from "../utils/getFunction";
-import { AiFillCheckCircle } from "react-icons/ai";
-import { MdCancel } from "react-icons/md";
 import StartingMenu from "./StartingMenu";
 import EndGameModal from "./EndGameModal";
 import PlayerScore from "./PlayerScore";
@@ -90,14 +87,55 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
 
   const handleSwitchPosition = () => {
     const newBoard = board.slice();
+    const playerWhite = game.playerWhite;
+    const playerBlack = game.playerBlack;
+    let castle = false;
     //castling
-    // if (
-    //   selectedPiece.piece.toUpperCase() === "K" &&
-    //   Math.abs(selectedPiece.x - selectedPosition.x) === 2
-    // ) {
-    //   if (selectedPosition.x === 6) {
+    if (
+      selectedPiece.piece.toUpperCase() === "K" &&
+      Math.abs(selectedPiece.x - selectedPosition.x) === 2
+    ) {
+      if (selectedPiece.x > selectedPosition.x) {
+        newBoard[selectedPiece.y][selectedPiece.x - 1] =
+          newBoard[selectedPiece.y][0];
+        newBoard[selectedPiece.y][0] = "x";
+      } else {
+        newBoard[selectedPiece.y][selectedPiece.x + 1] =
+          newBoard[selectedPiece.y][7];
+        newBoard[selectedPiece.y][7] = "x";
+      }
+      castle = true;
+      if (game.turn % 2 === 0) {
+        playerWhite.hasMovedKing = true;
+      } else {
+        playerBlack.hasMovedKing = true;
+      }
+    }
+    if (selectedPiece.piece.toUpperCase() === "K") {
+      console.log(game.playerWhite);
+      if (game.turn % 2 === 0) {
+        playerWhite.hasMovedKing = true;
+      } else {
+        playerBlack.hasMovedKing = true;
+      }
+    }
+    if (selectedPiece.piece.toUpperCase() === "R") {
+      if (game.turn % 2 === 0) {
+        if (selectedPiece.x === 0) {
+          playerWhite.hasMovedGrandRook = true;
+        } else if (selectedPiece.x === 7) {
+          playerWhite.hasMovedPetitRook = true;
+        }
+      } else {
+        if (selectedPiece.x === 0) {
+          playerBlack.hasMovedGrandRook = true;
+        } else if (selectedPiece.x === 7) {
+          playerBlack.hasMovedPetitRook = true;
+        }
+      }
+    }
 
-    if (selectedPosition.piece === "x") {
+    if (!castle && selectedPosition.piece === "x") {
       enPassantDeletePawn(newBoard);
       newBoard[selectedPiece.y][selectedPiece.x] = selectedPosition.piece;
       newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece;
@@ -113,12 +151,20 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
     const enPassant = checkEnPassant(selectedPiece, selectedPosition);
     if (enPassant !== -1) {
       const newArray = game.enPassant.map((_, i) => (i === enPassant ? 1 : 0));
-      setGame({ ...game, turn: game.turn + 1, enPassant: newArray });
+      setGame({
+        ...game,
+        turn: game.turn + 1,
+        enPassant: newArray,
+        playerBlack,
+        playerWhite,
+      });
     } else {
       setGame({
         ...game,
         turn: game.turn + 1,
         enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
+        playerBlack,
+        playerWhite,
       });
     }
     isCheck(board, game, setGame, setIsOver, setIsDraw);

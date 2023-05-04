@@ -10,14 +10,14 @@
 // ];
 
 export const startingBoardWhite = [
-  ["R", "N", "B", "Q", "K", "B", "N", "R"],
+  ["R", "x", "x", "x", "K", "x", "x", "R"],
   ["x", "x", "x", "x", "x", "x", "x", "p"],
   ["x", "x", "x", "x", "x", "x", "x", "x"],
   ["x", "x", "x", "x", "x", "x", "x", "x"],
   ["x", "x", "x", "x", "x", "x", "x", "x"],
   ["P", "x", "x", "x", "x", "x", "x", "x"],
   ["p", "x", "x", "x", "x", "x", "x", "x"],
-  ["x", "x", "x", "x", "k", "b", "n", "r"],
+  ["r", "x", "x", "x", "k", "x", "x", "r"],
 ];
 
 export const startingBoardBlack = [

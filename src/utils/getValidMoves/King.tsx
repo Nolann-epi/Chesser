@@ -44,7 +44,16 @@ export const getKingValidMoves = (
         return availableBoard;
       }
       if (!game.playerWhite.hasMovedPetitRook) {
-        if (getPiece({ y: pos.y, x: pos.x + 1 }, board) === "x") {
+        if (
+          getPiece({ y: pos.y, x: pos.x + 1 }, board) === "x" &&
+          !kingProjection(
+            { y: pos.y, x: pos.x + 1 },
+            board,
+            game,
+            { piece: "k", y: pos.y, x: pos.x },
+            false
+          )
+        ) {
           if (
             getPiece({ y: pos.y, x: pos.x + 2 }, board) === "x" &&
             !kingProjection(
@@ -60,7 +69,16 @@ export const getKingValidMoves = (
         }
       }
       if (!game.playerWhite.hasMovedGrandRook) {
-        if (getPiece({ y: pos.y, x: pos.x - 1 }, board) === "x") {
+        if (
+          getPiece({ y: pos.y, x: pos.x - 1 }, board) === "x" &&
+          !kingProjection(
+            { y: pos.y, x: pos.x - 1 },
+            board,
+            game,
+            { piece: "k", y: pos.y, x: pos.x },
+            false
+          )
+        ) {
           if (
             getPiece({ y: pos.y, x: pos.x - 2 }, board) === "x" &&
             !kingProjection(
@@ -92,7 +110,16 @@ export const getKingValidMoves = (
           return availableBoard;
         }
         if (!game.playerBlack.hasMovedPetitRook) {
-          if (getPiece({ y: pos.y, x: pos.x + 1 }, board) === "x") {
+          if (
+            getPiece({ y: pos.y, x: pos.x + 1 }, board) === "x" &&
+            !kingProjection(
+              { y: pos.y, x: pos.x + 1 },
+              board,
+              game,
+              { piece: "K", y: pos.y, x: pos.x },
+              false
+            )
+          ) {
             if (
               getPiece({ y: pos.y, x: pos.x + 2 }, board) === "x" &&
               !kingProjection(
@@ -108,7 +135,16 @@ export const getKingValidMoves = (
           }
         }
         if (!game.playerBlack.hasMovedGrandRook) {
-          if (getPiece({ y: pos.y, x: pos.x - 1 }, board) === "x") {
+          if (
+            getPiece({ y: pos.y, x: pos.x - 1 }, board) === "x" &&
+            !kingProjection(
+              { y: pos.y, x: pos.x - 1 },
+              board,
+              game,
+              { piece: "K", y: pos.y, x: pos.x },
+              false
+            )
+          ) {
             if (
               getPiece({ y: pos.y, x: pos.x - 2 }, board) === "x" &&
               !kingProjection(
@@ -167,7 +203,16 @@ export const getKingValidMoves = (
         }
       }
       if (!game.playerWhite.hasMovedGrandRook) {
-        if (getPiece({ y: pos.y, x: pos.x + 1 }, board) === "x") {
+        if (
+          getPiece({ y: pos.y, x: pos.x + 1 }, board) === "x" &&
+          !kingProjection(
+            { y: pos.y, x: pos.x + 1 },
+            board,
+            game,
+            { piece: "k", y: pos.y, x: pos.x },
+            false
+          )
+        ) {
           if (
             getPiece({ y: pos.y, x: pos.x + 2 }, board) === "x" &&
             !kingProjection(
@@ -199,7 +244,16 @@ export const getKingValidMoves = (
           return availableBoard;
         }
         if (!game.playerBlack.hasMovedPetitRook) {
-          if (getPiece({ y: pos.y, x: pos.x - 1 }, board) === "x") {
+          if (
+            getPiece({ y: pos.y, x: pos.x - 1 }, board) === "x" &&
+            !kingProjection(
+              { y: pos.y, x: pos.x - 1 },
+              board,
+              game,
+              { piece: "K", y: pos.y, x: pos.x },
+              false
+            )
+          ) {
             if (
               getPiece({ y: pos.y, x: pos.x - 2 }, board) === "x" &&
               !kingProjection(
@@ -215,7 +269,16 @@ export const getKingValidMoves = (
           }
         }
         if (!game.playerBlack.hasMovedGrandRook) {
-          if (getPiece({ y: pos.y, x: pos.x + 1 }, board) === "x") {
+          if (
+            getPiece({ y: pos.y, x: pos.x + 1 }, board) === "x" &&
+            !kingProjection(
+              { y: pos.y, x: pos.x + 1 },
+              board,
+              game,
+              { piece: "K", y: pos.y, x: pos.x },
+              false
+            )
+          ) {
             if (
               getPiece({ y: pos.y, x: pos.x + 2 }, board) === "x" &&
               !kingProjection(
