@@ -30,7 +30,6 @@ export const castling = (
     }
   }
   if (selectedPiece.piece.toUpperCase() === "K") {
-    console.log(game.playerWhite);
     if (game.turn % 2 === 0) {
       playerWhite.hasMovedKing = true;
     } else {

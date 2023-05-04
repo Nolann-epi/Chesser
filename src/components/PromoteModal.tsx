@@ -1,6 +1,4 @@
 import React from "react";
-import { AiFillCheckCircle } from "react-icons/ai";
-import { MdCancel } from "react-icons/md";
 
 interface PromoteModalProps {
   setPromoteChoice: (value: string) => void;

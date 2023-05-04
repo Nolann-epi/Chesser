@@ -85,13 +85,11 @@ const isCheckMate = (board: string[][], game: Game) => {
             true
           )
         ) {
-          console.log(piece, "can avoid checkmate");
           return false;
         }
       }
     }
   }
-  console.log("can't avoid check");
   return true;
 };
 
@@ -106,13 +104,10 @@ export const checkForCheck = (
   const pos = getKingPosition(board, king);
 
   if (isCheckBoard(board, { y: pos.y, x: pos.x, piece: king }, game)) {
-    console.log("check");
     if (isCheckMate(board, game)) {
-      console.log("CHECKMATE");
       setIsOver(true);
     } else {
       setGame((prev) => ({ ...prev, isCheck: true }));
-      console.log("you can avoid checkmate");
     }
   } else {
     if (isCheckMate(board, game)) {
@@ -122,5 +117,4 @@ export const checkForCheck = (
       setGame((prev) => ({ ...prev, isCheck: false }));
     }
   }
-  console.log(game);
 };

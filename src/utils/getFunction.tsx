@@ -1,6 +1,5 @@
-import { Square, MousePos, Game } from "../interfaces/Chess";
-
-import { getKingValidMoves, isCheckBoard } from "./getValidMoves/King";
+import { MousePos, Game } from "../interfaces/Chess";
+import { getKingValidMoves } from "./getValidMoves/King";
 import { getQueenValidMoves } from "./getValidMoves/Queen";
 import { getRookValidMoves } from "./getValidMoves/Rook";
 import { getBishopValidMoves } from "./getValidMoves/Bishop";

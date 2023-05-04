@@ -175,7 +175,6 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         resetAvailableBoard();
         setIsPromote(false);
         setPromotePiece("");
-        console.log("no available moves");
       }
     }
   };

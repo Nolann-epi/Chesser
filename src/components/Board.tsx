@@ -22,7 +22,7 @@ const Board = ({
       {board.map((row: any, rowIndex: any) => (
         <div
           key={rowIndex + 1}
-          className={`w-full h-[100px] flex flex-row ${
+          className={`w-full h-[100px] flex flex-row cursor-pointer ${
             isOver ? "opacity-50" : "opacity-100"
           }`}
         >
