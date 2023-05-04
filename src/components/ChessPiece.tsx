@@ -9,7 +9,8 @@ interface ChessPieceProps {
 const ChessPiece = ({ letter, isAvailable, turn }: ChessPieceProps) => {
   const isPiece = letter !== "x";
   const color = letter === letter.toUpperCase() ? "B" : "W";
-  const url = `url(/chess/${letter.toUpperCase()}${color}.png)`;
+  const url = isPiece ? `url(/chess/${letter.toUpperCase()}${color}.png)` : "";
+
   return (
     <div
       style={{ backgroundImage: url }}
