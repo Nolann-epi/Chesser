@@ -6,13 +6,13 @@ import {
   getPiece,
   isEnemyPiece,
   isOutOfBondsMoves,
-  kingProjection,
 } from "../getFunction";
 import { canRookCheck } from "./Rook";
 import { canKnightCheck } from "./Knight";
 import { canBishopCheck } from "./Bishop";
 import { canBlackPawnCheck } from "./BlackPawn";
 import { canWhitePawnCheck } from "./WhitePawn";
+import { kingProjection } from "../check";
 
 export const getKingValidMoves = (
   pos: MousePos,

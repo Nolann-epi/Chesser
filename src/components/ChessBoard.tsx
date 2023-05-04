@@ -3,19 +3,23 @@ import {
   startingBoardWhite,
   startingBoardBlack,
   startingAvailableBoard,
+  defaultGame,
 } from "../models/Boards";
-import ChessPiece from "./ChessPiece";
 import { Square, MousePos, Game } from "../interfaces/Chess";
 import {
   checkValidMoves,
   getAvailabilty,
   getPiece,
   hasAvailableMoves,
-  isCheck,
 } from "../utils/getFunction";
 import StartingMenu from "./StartingMenu";
 import EndGameModal from "./EndGameModal";
 import PlayerScore from "./PlayerScore";
+import PromoteModal from "./PromoteModal";
+import Board from "./Board";
+import { enPassantDeletePawn, setEnPassant } from "@/utils/enPassant";
+import { castling } from "@/utils/castling";
+import { checkForCheck } from "@/utils/check";
 
 interface ChessBoardProps {
   setGame: React.Dispatch<React.SetStateAction<Game>>;
@@ -44,43 +48,13 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
   const [isOver, setIsOver] = useState<boolean>(false);
   const [hasStarted, setHasStarted] = useState<boolean>(false);
   const [isDraw, setIsDraw] = useState<boolean>(false);
+  const [isPromote, setIsPromote] = useState<boolean>(false);
+  const [promotePiece, setPromotePiece] = useState<string>("");
 
   const resetAvailableBoard = () => {
     for (let y = 0; y < availableBoard.length; y++) {
       for (let x = 0; x < availableBoard[y].length; x++) {
         availableBoard[y][x] = false;
-      }
-    }
-  };
-  const checkEnPassant = (piece: Square, position: Square) => {
-    if (piece.piece.toUpperCase() === "P" && piece.x === position.x) {
-      if (Math.abs(piece.y - position.y) === 2) {
-        const newArray = game.enPassant.slice();
-        newArray[piece.x] = 1;
-        return piece.x;
-      }
-    } else {
-      return -1;
-    }
-  };
-
-  const enPassantDeletePawn = (newBoard: string[][]) => {
-    if (
-      selectedPiece.piece.toUpperCase() === "P" &&
-      selectedPiece.x !== selectedPosition.x
-    ) {
-      if (game.isWhite) {
-        if (selectedPiece.piece === selectedPiece.piece.toUpperCase()) {
-          newBoard[selectedPosition.y - 2][selectedPosition.x] = "x";
-        } else {
-          newBoard[selectedPosition.y + 2][selectedPosition.x] = "x";
-        }
-      } else {
-        if (selectedPiece.piece !== selectedPiece.piece.toUpperCase()) {
-          newBoard[selectedPosition.y - 2][selectedPosition.x] = "x";
-        } else {
-          newBoard[selectedPosition.y + 2][selectedPosition.x] = "x";
-        }
       }
     }
   };
@@ -91,87 +65,56 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
     const playerBlack = game.playerBlack;
     let castle = false;
     let promote = false;
-    //castling
-    if (
-      selectedPiece.piece.toUpperCase() === "K" &&
-      Math.abs(selectedPiece.x - selectedPosition.x) === 2
-    ) {
-      if (selectedPiece.x > selectedPosition.x) {
-        newBoard[selectedPiece.y][selectedPiece.x - 1] =
-          newBoard[selectedPiece.y][0];
-        newBoard[selectedPiece.y][0] = "x";
-      } else {
-        newBoard[selectedPiece.y][selectedPiece.x + 1] =
-          newBoard[selectedPiece.y][7];
-        newBoard[selectedPiece.y][7] = "x";
-      }
-      castle = true;
-      if (game.turn % 2 === 0) {
-        playerWhite.hasMovedKing = true;
-      } else {
-        playerBlack.hasMovedKing = true;
-      }
-    }
-    if (selectedPiece.piece.toUpperCase() === "K") {
-      console.log(game.playerWhite);
-      if (game.turn % 2 === 0) {
-        playerWhite.hasMovedKing = true;
-      } else {
-        playerBlack.hasMovedKing = true;
-      }
-    }
-    if (selectedPiece.piece.toUpperCase() === "R") {
-      if (game.turn % 2 === 0) {
-        if (selectedPiece.x === 0) {
-          playerWhite.hasMovedGrandRook = true;
-        } else if (selectedPiece.x === 7) {
-          playerWhite.hasMovedPetitRook = true;
-        }
-      } else {
-        if (selectedPiece.x === 0) {
-          playerBlack.hasMovedGrandRook = true;
-        } else if (selectedPiece.x === 7) {
-          playerBlack.hasMovedPetitRook = true;
-        }
-      }
-    }
+    castling(
+      newBoard,
+      castle,
+      playerWhite,
+      playerBlack,
+      selectedPiece,
+      selectedPosition,
+      game
+    );
     if (selectedPiece.piece.toUpperCase() === "P") {
-      if (game.turn % 2 === 0 && game.isWhite) {
+      if (game.turn % 2 === 0 && game.isWhite && !isPromote) {
         if (selectedPiece.y === 1) {
           promote = true;
+          setIsPromote(true);
         }
       }
       if (game.turn % 2 === 0 && !game.isWhite) {
         if (selectedPiece.y === 6) {
           promote = true;
+          setIsPromote(true);
         }
       }
       if (game.turn % 2 === 1 && game.isWhite) {
         if (selectedPiece.y === 6) {
           promote = true;
+          setIsPromote(true);
         }
       }
       if (game.turn % 2 === 1 && !game.isWhite) {
         if (selectedPiece.y === 1) {
           promote = true;
+          setIsPromote(true);
         }
       }
-      if (promote == true) {
-        console.log("promote");
+      if (promote == true && promotePiece === "") {
+        return;
       }
     }
-    if (promote) {
+    if (promotePiece !== "") {
       newBoard[selectedPiece.y][selectedPiece.x] = "x";
-      if (game.turn % 2 === 0) {
-        newBoard[selectedPosition.y][selectedPosition.x] = "q";
+      if (game.turn % 2 === 1) {
+        newBoard[selectedPosition.y][selectedPosition.x] = promotePiece;
       } else {
-        newBoard[selectedPosition.y][selectedPosition.x] = "Q";
+        newBoard[selectedPosition.y][selectedPosition.x] =
+          promotePiece.toLowerCase();
       }
     }
-
     if (!promote) {
       if (!castle && selectedPosition.piece === "x") {
-        enPassantDeletePawn(newBoard);
+        enPassantDeletePawn(newBoard, selectedPiece, selectedPosition, game);
         newBoard[selectedPiece.y][selectedPiece.x] = selectedPosition.piece;
         newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece;
       } else {
@@ -179,37 +122,32 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece;
       }
     }
+
     setBoard(newBoard);
     setSelectedPosition({ x: 0, y: 0, piece: "" });
     setselectedPiece({ x: 0, y: 0, piece: "" });
     setSwitchPosition(false);
+    setPromotePiece("");
+    setIsPromote(false);
     resetAvailableBoard();
-    const enPassant = checkEnPassant(selectedPiece, selectedPosition);
-    if (enPassant !== -1) {
-      const newArray = game.enPassant.map((_, i) => (i === enPassant ? 1 : 0));
-      setGame({
-        ...game,
-        turn: game.turn + 1,
-        enPassant: newArray,
-        playerBlack,
-        playerWhite,
-      });
-    } else {
-      setGame({
-        ...game,
-        turn: game.turn + 1,
-        enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
-        playerBlack,
-        playerWhite,
-      });
-    }
-    isCheck(board, game, setGame, setIsOver, setIsDraw);
+    setEnPassant(
+      selectedPiece,
+      selectedPosition,
+      game,
+      playerBlack,
+      playerWhite,
+      setGame
+    );
+    checkForCheck(board, game, setGame, setIsOver, setIsDraw);
   };
 
   useEffect(() => {
+    if (promotePiece !== "" && !isPromote) {
+      handleSwitchPosition();
+    }
     if (!switchPosition) return;
     handleSwitchPosition();
-  }, [switchPosition, selectedPosition, game]);
+  }, [switchPosition, selectedPosition, game, promotePiece]);
 
   const getMousePosition = (e: any, pos: MousePos) => {
     if (selectedPiece.piece === "") {
@@ -235,118 +173,52 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
       } else {
         setselectedPiece({ x: 0, y: 0, piece: "" });
         resetAvailableBoard();
+        setIsPromote(false);
+        setPromotePiece("");
+        console.log("no available moves");
       }
     }
   };
 
-  const replayGame = () => {
-    if (game.isWhite) {
-      setGame({
-        isWhite: false,
-        turn: 0,
-        enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
-        isCheck: false,
-        isCheckMate: false,
-        playerBlack: {
-          hasMovedGrandRook: false,
-          hasMovedPetitRook: false,
-          hasMovedKing: false,
-          score: 0,
-        },
-        playerWhite: {
-          hasMovedGrandRook: false,
-          hasMovedPetitRook: false,
-          hasMovedKing: false,
-          score: 0,
-        },
-      });
-      setBoard(JSON.parse(JSON.stringify(startingBoardBlack)));
-    } else {
-      setGame({
-        isWhite: true,
-        turn: 0,
-        enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
-        isCheck: false,
-        isCheckMate: false,
-        playerBlack: {
-          hasMovedGrandRook: false,
-          hasMovedPetitRook: false,
-          hasMovedKing: false,
-          score: 0,
-        },
-        playerWhite: {
-          hasMovedGrandRook: false,
-          hasMovedPetitRook: false,
-          hasMovedKing: false,
-          score: 0,
-        },
-      });
-      setBoard(JSON.parse(JSON.stringify(startingBoardWhite)));
-    }
+  const resetState = () => {
     setAvailableBoard(startingAvailableBoard.slice());
     setselectedPiece({ x: 0, y: 0, piece: "" });
     setSelectedPosition({ x: 0, y: 0, piece: "" });
     setSwitchPosition(false);
+  };
+
+  const replayGame = () => {
+    setGame({
+      ...defaultGame,
+      isWhite: game.isWhite ? false : true,
+    });
+    setBoard(
+      JSON.parse(
+        JSON.stringify(game.isWhite ? startingBoardBlack : startingBoardWhite)
+      )
+    );
+    resetState();
     setIsOver(false);
   };
 
   const stopGame = () => {
-    setGame({
-      isWhite: false,
-      turn: 0,
-      enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
-      isCheck: false,
-      isCheckMate: false,
-      playerBlack: {
-        hasMovedGrandRook: false,
-        hasMovedPetitRook: false,
-        hasMovedKing: false,
-        score: 0,
-      },
-      playerWhite: {
-        hasMovedGrandRook: false,
-        hasMovedPetitRook: false,
-        hasMovedKing: false,
-        score: 0,
-      },
-    });
-    setAvailableBoard(startingAvailableBoard.slice());
-    setselectedPiece({ x: 0, y: 0, piece: "" });
-    setSelectedPosition({ x: 0, y: 0, piece: "" });
-    setSwitchPosition(false);
+    setGame(defaultGame);
+    resetState();
     setHasStarted(false);
   };
 
   const startGame = (color: string) => {
-    const isWhite = color === "white" ? true : false;
+    const isWhite = color === "white";
     setGame({
+      ...defaultGame,
       isWhite: isWhite,
-      turn: 0,
-      enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
-      isCheck: false,
-      isCheckMate: false,
-      playerBlack: {
-        hasMovedGrandRook: false,
-        hasMovedPetitRook: false,
-        hasMovedKing: false,
-        score: 0,
-      },
-      playerWhite: {
-        hasMovedGrandRook: false,
-        hasMovedPetitRook: false,
-        hasMovedKing: false,
-        score: 0,
-      },
     });
-    if (isWhite) {
-      setBoard(JSON.parse(JSON.stringify(startingBoardWhite)));
-    } else {
-      setBoard(JSON.parse(JSON.stringify(startingBoardBlack)));
-    }
-    setAvailableBoard(startingAvailableBoard.slice());
-    setselectedPiece({ x: 0, y: 0, piece: "" });
-    setSelectedPosition({ x: 0, y: 0, piece: "" });
-    setSwitchPosition(false);
+    setBoard(
+      JSON.parse(
+        JSON.stringify(isWhite ? startingBoardWhite : startingBoardBlack)
+      )
+    );
+    resetState();
     setIsOver(false);
     setHasStarted(true);
   };
@@ -354,39 +226,17 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
   return (
     <div className="">
       {hasStarted && (
-        <PlayerScore isWhite={game.isWhite} name={"Opponent"} board={board} />
-      )}
-      {hasStarted &&
-        board.map((row: any, rowIndex: any) => (
-          <div
-            key={rowIndex + 1}
-            className={`w-full h-[100px] flex flex-row ${
-              isOver ? "opacity-50" : "opacity-100"
-            }`}
-          >
-            {row.map((col: any, colIndex: any) => (
-              <div
-                key={(colIndex + 1) * (rowIndex + 1)}
-                onClick={(e) =>
-                  getMousePosition(e, { x: colIndex, y: rowIndex })
-                }
-                className={`w-[100px] h-full flex justify-center items-center ${
-                  (rowIndex + colIndex) % 2 === 0
-                    ? "bg-[#fff8ed]"
-                    : "bg-[#be760a]"
-                }`}
-              >
-                <ChessPiece
-                  letter={col}
-                  isAvailable={availableBoard[rowIndex][colIndex]}
-                  turn={game.turn}
-                />
-              </div>
-            ))}
-          </div>
-        ))}
-      {hasStarted && (
-        <PlayerScore isWhite={!game.isWhite} name={"Me"} board={board} />
+        <div>
+          <PlayerScore isWhite={game.isWhite} name={"Opponent"} board={board} />
+          <Board
+            board={board}
+            availableBoard={availableBoard}
+            getMousePosition={getMousePosition}
+            game={game}
+            isOver={isOver}
+          />
+          <PlayerScore isWhite={!game.isWhite} name={"Me"} board={board} />
+        </div>
       )}
       {isOver && (
         <EndGameModal
@@ -397,6 +247,13 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         />
       )}
       <StartingMenu hasStarted={hasStarted} startGame={startGame} />
+      {isPromote && (
+        <PromoteModal
+          isWhiteToPlay={game.turn % 2 == 0}
+          setPromoteChoice={setPromotePiece}
+          setIsPromote={setIsPromote}
+        />
+      )}
     </div>
   );
 };

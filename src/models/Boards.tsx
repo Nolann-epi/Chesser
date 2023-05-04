@@ -1,12 +1,23 @@
+// export const startingBoardWhite = [
+//   ["R", "N", "B", "Q", "K", "B", "N", "R"],
+//   ["P", "P", "P", "P", "P", "P", "P", "P"],
+//   ["x", "x", "x", "x", "x", "x", "x", "x"],
+//   ["x", "x", "x", "x", "x", "x", "x", "x"],
+//   ["x", "x", "x", "x", "x", "x", "x", "x"],
+//   ["x", "x", "x", "x", "x", "x", "x", "x"],
+//   ["p", "p", "p", "p", "p", "p", "p", "p"],
+//   ["r", "n", "b", "q", "k", "b", "n", "r"],
+// ];
+
 export const startingBoardWhite = [
-  ["R", "N", "B", "Q", "K", "B", "N", "R"],
-  ["P", "P", "P", "P", "P", "P", "P", "P"],
+  ["R", "x", "x", "x", "K", "x", "x", "x"],
+  ["x", "x", "x", "x", "x", "x", "x", "p"],
   ["x", "x", "x", "x", "x", "x", "x", "x"],
   ["x", "x", "x", "x", "x", "x", "x", "x"],
   ["x", "x", "x", "x", "x", "x", "x", "x"],
+  ["P", "x", "x", "x", "x", "x", "x", "x"],
   ["x", "x", "x", "x", "x", "x", "x", "x"],
-  ["p", "p", "p", "p", "p", "p", "p", "p"],
-  ["r", "n", "b", "q", "k", "b", "n", "r"],
+  ["x", "x", "x", "x", "k", "x", "x", "r"],
 ];
 
 export const startingBoardBlack = [
@@ -41,3 +52,23 @@ export const checkMateAvailableBoard = [
   [false, false, false, false, false, false, false, false],
   [false, false, false, false, false, false, false, false],
 ];
+
+export const defaultGame = {
+  isWhite: false,
+  turn: 0,
+  enPassant: [0, 0, 0, 0, 0, 0, 0, 0],
+  isCheck: false,
+  isCheckMate: false,
+  playerBlack: {
+    hasMovedGrandRook: false,
+    hasMovedPetitRook: false,
+    hasMovedKing: false,
+    score: 0,
+  },
+  playerWhite: {
+    hasMovedGrandRook: false,
+    hasMovedPetitRook: false,
+    hasMovedKing: false,
+    score: 0,
+  },
+};

@@ -33,3 +33,19 @@ export interface PropsFunction {
   isWhiteToPlay: boolean;
   board: string[][];
 }
+
+export interface gameProps {
+  setGame: React.Dispatch<React.SetStateAction<Game>>;
+  game: Game;
+  setBoard: React.Dispatch<React.SetStateAction<string[][]>>;
+  setAvailableBoard: React.Dispatch<React.SetStateAction<boolean[][]>>;
+  setselectedPiece: React.Dispatch<React.SetStateAction<Square>>;
+  setSelectedPosition: React.Dispatch<React.SetStateAction<Square>>;
+  setSwitchPosition: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOver: React.Dispatch<React.SetStateAction<boolean>>;
+  setHasStarted: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsDraw: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsPromote: React.Dispatch<React.SetStateAction<boolean>>;
+  setPromotePiece: React.Dispatch<React.SetStateAction<string>>;
+  color?: string;
+}
