@@ -90,6 +90,7 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
     const playerWhite = game.playerWhite;
     const playerBlack = game.playerBlack;
     let castle = false;
+    let promote = false;
     //castling
     if (
       selectedPiece.piece.toUpperCase() === "K" &&
@@ -134,14 +135,49 @@ const ChessBoard = ({ game, setGame }: ChessBoardProps) => {
         }
       }
     }
-
-    if (!castle && selectedPosition.piece === "x") {
-      enPassantDeletePawn(newBoard);
-      newBoard[selectedPiece.y][selectedPiece.x] = selectedPosition.piece;
-      newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece;
-    } else {
+    if (selectedPiece.piece.toUpperCase() === "P") {
+      if (game.turn % 2 === 0 && game.isWhite) {
+        if (selectedPiece.y === 1) {
+          promote = true;
+        }
+      }
+      if (game.turn % 2 === 0 && !game.isWhite) {
+        if (selectedPiece.y === 6) {
+          promote = true;
+        }
+      }
+      if (game.turn % 2 === 1 && game.isWhite) {
+        if (selectedPiece.y === 6) {
+          promote = true;
+        }
+      }
+      if (game.turn % 2 === 1 && !game.isWhite) {
+        if (selectedPiece.y === 1) {
+          promote = true;
+        }
+      }
+      if (promote == true) {
+        console.log("promote");
+      }
+    }
+    if (promote) {
       newBoard[selectedPiece.y][selectedPiece.x] = "x";
-      newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece;
+      if (game.turn % 2 === 0) {
+        newBoard[selectedPosition.y][selectedPosition.x] = "q";
+      } else {
+        newBoard[selectedPosition.y][selectedPosition.x] = "Q";
+      }
+    }
+
+    if (!promote) {
+      if (!castle && selectedPosition.piece === "x") {
+        enPassantDeletePawn(newBoard);
+        newBoard[selectedPiece.y][selectedPiece.x] = selectedPosition.piece;
+        newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece;
+      } else {
+        newBoard[selectedPiece.y][selectedPiece.x] = "x";
+        newBoard[selectedPosition.y][selectedPosition.x] = selectedPiece.piece;
+      }
     }
     setBoard(newBoard);
     setSelectedPosition({ x: 0, y: 0, piece: "" });

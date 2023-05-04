@@ -10,7 +10,7 @@
 // ];
 
 export const startingBoardWhite = [
-  ["R", "x", "x", "x", "K", "x", "x", "R"],
+  ["R", "x", "x", "x", "K", "x", "x", "x"],
   ["x", "x", "x", "x", "x", "x", "x", "p"],
   ["x", "x", "x", "x", "x", "x", "x", "x"],
   ["x", "x", "x", "x", "x", "x", "x", "x"],
