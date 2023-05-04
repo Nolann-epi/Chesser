@@ -2,7 +2,7 @@
 
 ![main_chesser](https://user-images.githubusercontent.com/62303354/236130046-c91abc26-9372-4ec8-a879-9b662865fb74.png)
 
-This is a chess game built with Next.js and javascript. The game allows two players to play against each other on the same computer. No chess library were used.
+Chesser is a chess game built with Next.js and javascript. The game allows two players to play against each other on the same computer. No chess library were used.
 
 # How to play
 
